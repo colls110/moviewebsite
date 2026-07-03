@@ -287,6 +287,47 @@ button:hover{
 
 }
 
+.back-btn{
+
+    position:absolute;
+
+    top:24px;
+    left:24px;
+
+    background:none;
+    border:none;
+
+    color:white;
+
+    font-size:28px;
+    font-weight:bold;
+
+    cursor:pointer;
+
+    z-index:10;
+
+    transition:
+        opacity .3s,
+        transform .15s,
+        color .15s;
+
+}
+
+.back-btn:hover{
+
+    color:#8db9ff;
+
+    transform:scale(1.08);
+
+}
+
+.player.hide-ui .back-btn{
+
+    opacity:0;
+    pointer-events:none;
+
+}
+
 </style>
 
 </head>
@@ -296,6 +337,8 @@ button:hover{
 <body>
 
 <div class="player">
+
+<button id="back" class="back-btn">← Back</button>
 
 <video id="video">
 
@@ -474,6 +517,8 @@ const jumpPopup = document.getElementById("jumpPopup");
 const jumpInput = document.getElementById("jumpInput");
 const jumpGo = document.getElementById("jumpGo");
 
+const back = document.getElementById("back");
+
 let hideTimer;
 
 function showUI(){
@@ -530,6 +575,12 @@ function parseTime(text){
 video.onloadedmetadata = () => {
 
     progress.max = video.duration;
+
+};
+
+back.onclick = () => {
+
+    window.location.href = "index.html";
 
 };
 
