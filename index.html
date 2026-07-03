@@ -203,6 +203,77 @@ button:hover{
 
 }
 
+.jump-container{
+
+    position:relative;
+
+}
+
+.jump-popup{
+
+    position:absolute;
+
+    bottom:55px;
+    right:0;
+
+    display:flex;
+    gap:8px;
+
+    padding:8px;
+
+    background:rgba(20,20,20,.95);
+
+    border-radius:8px;
+
+    opacity:0;
+    pointer-events:none;
+
+    transform:translateY(10px);
+
+    transition:.2s;
+
+}
+
+.jump-popup.show{
+
+    opacity:1;
+    pointer-events:auto;
+
+    transform:translateY(0);
+
+}
+
+.jump-popup input{
+
+    width:70px;
+
+    background:#2a2a2a;
+
+    color:white;
+
+    border:none;
+
+    outline:none;
+
+    padding:6px 8px;
+
+    border-radius:6px;
+
+    text-align:center;
+
+}
+
+.jump-popup button{
+
+    width:auto;
+    height:auto;
+
+    padding:6px 12px;
+
+    font-size:15px;
+
+}
+
 </style>
 
 </head>
@@ -266,6 +337,23 @@ How Much Does It Cost Dexter To Kill One Person?
 <button id="captions">CC</button>
 
 <button id="fullscreen">⛶</button>
+
+</div>
+
+<div class="jump-container">
+
+    <button id="jumpTime">🕒</button>
+
+    <div id="jumpPopup" class="jump-popup">
+
+        <input
+            id="jumpInput"
+            type="text"
+            placeholder="0:45">
+
+        <button id="jumpGo">Go</button>
+
+    </div>
 
 </div>
 
@@ -369,6 +457,8 @@ const time = document.getElementById("time");
 const player = document.querySelector(".player");
 
 const jumpTime = document.getElementById("jumpTime");
+const jumpPopup = document.getElementById("jumpPopup");
+const jumpInput = document.getElementById("jumpInput");
 
 let hideTimer;
 
@@ -548,9 +638,30 @@ captions.onclick = () => {
 
 };
 
-jumpTime.onclick = () => {
+jumpTime.onclick = (e) => {
 
-    // Open your custom "Go to Time" popup
+    e.stopPropagation();
+
+    jumpPopup.classList.toggle("show");
+
+    if(jumpPopup.classList.contains("show")){
+
+        jumpInput.focus();
+        jumpInput.select();
+
+    }
+
+};
+
+document.addEventListener("click",()=>{
+
+    jumpPopup.classList.remove("show");
+
+});
+
+jumpPopup.onclick = (e)=>{
+
+    e.stopPropagation();
 
 };
 
