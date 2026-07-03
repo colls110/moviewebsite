@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Video Details</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#000;
+    color:white;
+}
+
+.header{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:24px 40px;
+
+    border-bottom:1px solid #1a1a1a;
+
+}
+
+.logo{
+
+    font-size:28px;
+    font-weight:bold;
+
+}
+
+.back{
+
+    color:#8db9ff;
+    text-decoration:none;
+    font-weight:bold;
+
+}
+
+.container{
+
+    max-width:1200px;
+
+    margin:40px auto;
+
+    padding:0 30px;
+
+}
+
+.layout{
+
+    display:grid;
+    grid-template-columns:700px 1fr;
+
+    gap:40px;
+
+}
+
+.thumbnail{
+
+    width:100%;
+    aspect-ratio:16/9;
+
+    border-radius:16px;
+
+    background:linear-gradient(
+        135deg,
+        #2a2a2a,
+        #3d3d3d
+    );
+
+}
+
+.title{
+
+    font-size:34px;
+    font-weight:bold;
+
+    margin-bottom:18px;
+
+}
+
+.meta{
+
+    color:#9f9f9f;
+
+    margin-bottom:24px;
+
+}
+
+.description{
+
+    color:#d4d4d4;
+
+    line-height:1.6;
+
+    margin-bottom:35px;
+
+}
+
+.watch{
+
+    display:inline-block;
+
+    background:#4da3ff;
+
+    color:white;
+
+    text-decoration:none;
+
+    font-weight:bold;
+
+    padding:14px 24px;
+
+    border-radius:10px;
+
+    transition:.2s;
+
+}
+
+.watch:hover{
+
+    transform:scale(1.05);
+
+}
+
+.more{
+
+    margin-top:70px;
+
+}
+
+.more h2{
+
+    margin-bottom:20px;
+
+}
+
+.grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:20px;
+
+}
+
+.card{
+
+    cursor:pointer;
+
+}
+
+.card:hover{
+
+    transform:scale(1.03);
+
+}
+
+.thumb{
+
+    width:100%;
+
+    aspect-ratio:16/9;
+
+    border-radius:12px;
+
+    background:#2d2d2d;
+
+    margin-bottom:10px;
+
+}
+
+.card p{
+
+    font-weight:bold;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+    <div class="logo">🎬 C's Movies</div>
+
+    <a class="back" href="index.html">← Home</a>
+
+</div>
+
+<div class="container">
+
+    <div class="layout">
+
+        <div class="thumbnail"></div>
+
+        <div>
+
+            <div class="title">
+                How Much Does It Cost Dexter To Kill One Person?
+            </div>
+
+            <div class="meta">
+                🎬 Dexter • 🕒 12:45 • 📅 July 2026
+            </div>
+
+            <div class="description">
+
+                This video breaks down every expense Dexter likely pays throughout
+                the series, from plastic wrap and knives to vehicles, apartments,
+                and other hidden costs.
+
+            </div>
+
+            <a class="watch" href="watch.html?id=dexter-cost">
+                ▶ Watch Now
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="more">
+
+        <h2>More Like This</h2>
+
+        <div class="grid">
+
+            <div class="card">
+                <div class="thumb"></div>
+                <p>Another Dexter Video</p>
+            </div>
+
+            <div class="card">
+                <div class="thumb"></div>
+                <p>Movie Analysis</p>
+            </div>
+
+            <div class="card">
+                <div class="thumb"></div>
+                <p>Breaking Bad Video</p>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
