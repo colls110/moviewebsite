@@ -457,6 +457,7 @@ const player = document.querySelector(".player");
 const jumpTime = document.getElementById("jumpTime");
 const jumpPopup = document.getElementById("jumpPopup");
 const jumpInput = document.getElementById("jumpInput");
+const jumpGo = document.getElementById("jumpGo");
 
 let hideTimer;
 
@@ -475,6 +476,39 @@ function showUI(){
         },2500);
 
     }
+
+}
+
+function parseTime(text){
+
+    text = text.trim();
+
+    const parts = text.split(":").map(Number);
+
+    if(parts.some(isNaN))
+        return null;
+
+    if(parts.length == 1){
+
+        return parts[0];
+
+    }
+
+    if(parts.length == 2){
+
+        return parts[0] * 60 + parts[1];
+
+    }
+
+    if(parts.length == 3){
+
+        return parts[0] * 3600 +
+               parts[1] * 60 +
+               parts[2];
+
+    }
+
+    return null;
 
 }
 
@@ -622,6 +656,16 @@ fullscreen.onclick=()=>{
 
 }
 
+jumpInput.addEventListener("keydown",e=>{
+
+    if(e.key == "Enter"){
+
+        jumpGo.click();
+
+    }
+
+});
+
 const captions = document.getElementById("captions");
 
 let captionsEnabled = false;
@@ -648,6 +692,27 @@ jumpTime.onclick = (e) => {
         jumpInput.select();
 
     }
+
+};
+
+jumpGo.onclick = () => {
+
+    const seconds = parseTime(jumpInput.value);
+
+    if(seconds == null){
+
+        alert("Invalid time.");
+
+        return;
+
+    }
+
+    video.currentTime = Math.min(
+        Math.max(seconds,0),
+        video.duration
+    );
+
+    jumpPopup.classList.remove("show");
 
 };
 
