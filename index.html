@@ -70,16 +70,37 @@ input[type=range]{
 
 <div class="controls">
 
+    <button id="rewind">⏪ 10</button>
+
     <button id="play">▶</button>
 
-    <input
-        id="progress"
-        type="range"
-        min="0"
-        max="100"
-        value="0">
+    <button id="forward">10 ⏩</button>
+
+    <input id="progress" type="range" min="0" max="100" value="0">
 
     <span id="time">0:00 / 0:00</span>
+
+    <button id="mute">🔊</button>
+
+    <input
+        id="volume"
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        value="1"
+        style="width:100px;">
+
+    <select id="speed">
+        <option value="0.5">0.5x</option>
+        <option value="0.75">0.75x</option>
+        <option value="1" selected>1x</option>
+        <option value="1.25">1.25x</option>
+        <option value="1.5">1.5x</option>
+        <option value="2">2x</option>
+    </select>
+
+    <button id="captions">CC</button>
 
     <button id="fullscreen">⛶</button>
 
@@ -94,6 +115,12 @@ const play = document.getElementById("play");
 const progress = document.getElementById("progress");
 const time = document.getElementById("time");
 const fullscreen = document.getElementById("fullscreen");
+const rewind = document.getElementById("rewind");
+const forward = document.getElementById("forward");
+const mute = document.getElementById("mute");
+const volume = document.getElementById("volume");
+const speed = document.getElementById("speed");
+const captions = document.getElementById("captions");
 
 function format(seconds){
     if(isNaN(seconds)) return "0:00";
@@ -138,6 +165,38 @@ fullscreen.onclick = () => {
     if(video.requestFullscreen){
         video.requestFullscreen();
     }
+
+};
+
+rewind.onclick = () => {
+    video.currentTime = Math.max(0, video.currentTime - 10);
+};
+
+forward.onclick = () => {
+    video.currentTime = Math.min(video.duration, video.currentTime + 10);
+};
+
+volume.oninput = () => {
+    video.volume = volume.value;
+};
+
+mute.onclick = () => {
+
+    video.muted = !video.muted;
+
+    mute.textContent = video.muted ? "🔇" : "🔊";
+
+};
+
+speed.onchange = () => {
+
+    video.playbackRate = Number(speed.value);
+
+};
+
+captions.onclick = () => {
+
+    alert("Captions not added yet!");
 
 };
 
