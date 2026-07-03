@@ -120,7 +120,7 @@ button:hover{
     position:absolute;
 
     left:50%;
-    bottom:60px;
+    bottom:65px;
 
     transform:translateX(-50%) rotate(-90deg);
 
@@ -211,6 +211,77 @@ How Much Does It Cost Dexter To Kill One Person?
 </div>
 
 <script>
+
+document.addEventListener("keydown", (e) => {
+
+    // Ignore shortcuts while typing in an input
+    if (e.target.tagName === "INPUT")
+        return;
+
+    switch (e.key.toLowerCase()) {
+
+        // Play / Pause
+        case " ":
+        case "k":
+            e.preventDefault();
+
+            if (video.paused)
+                video.play();
+            else
+                video.pause();
+
+            break;
+
+        // Fullscreen
+        case "f":
+            e.preventDefault();
+
+            if (!document.fullscreenElement)
+                document.querySelector(".player").requestFullscreen();
+            else
+                document.exitFullscreen();
+
+            break;
+
+        // Mute
+        case "m":
+            video.muted = !video.muted;
+            mute.textContent = video.muted ? "🔇" : "🔊";
+            break;
+
+        // Rewind 10s
+        case "arrowleft":
+            e.preventDefault();
+            video.currentTime = Math.max(0, video.currentTime - 10);
+            break;
+
+        // Forward 10s
+        case "arrowright":
+            e.preventDefault();
+            video.currentTime = Math.min(video.duration, video.currentTime + 10);
+            break;
+
+        // Volume Up
+        case "arrowup":
+            e.preventDefault();
+
+            video.volume = Math.min(1, video.volume + 0.05);
+            volume.value = video.volume;
+
+            break;
+
+        // Volume Down
+        case "arrowdown":
+            e.preventDefault();
+
+            video.volume = Math.max(0, video.volume - 0.05);
+            volume.value = video.volume;
+
+            break;
+
+    }
+
+});
 
 const video = document.getElementById("video");
 
