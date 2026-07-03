@@ -565,6 +565,11 @@ document.title = videop.title;
 
 video.src = videop.video;
 video.load();
+video.play().catch(err => {
+
+    console.log("Autoplay blocked", err);
+
+});
 
 if (!videop) {
 
