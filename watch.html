@@ -332,6 +332,8 @@ button:hover{
 
     position:absolute;
 
+    z-index:10;
+
     top:50%;
     left:50%;
 
@@ -669,12 +671,10 @@ play.onclick=()=>{
     if(video.paused){
 
         video.play();
-        showCenterIcon("▶️");
 
     }else{
 
         video.pause();
-        showCenterIcon("⏸️");
 
     }
 
@@ -706,10 +706,16 @@ video.ontimeupdate=()=>{
 
 video.addEventListener("click", () => {
 
-    if (video.paused)
+    if (video.paused) {
         video.play();
-    else
+        showCenterIcon("▶️");
+    }
+        
+    else {
         video.pause();
+        showCenterIcon("⏸️");
+    }
+        
 
 });
 
