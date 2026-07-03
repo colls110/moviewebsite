@@ -283,6 +283,24 @@ document.addEventListener("keydown", (e) => {
 
 });
 
+video.addEventListener("click", () => {
+
+    if (video.paused)
+        video.play();
+    else
+        video.pause();
+
+});
+
+video.addEventListener("dblclick", () => {
+
+    if (!document.fullscreenElement)
+        document.querySelector(".player").requestFullscreen();
+    else
+        document.exitFullscreen();
+
+});
+
 const video = document.getElementById("video");
 
 const play = document.getElementById("play");
