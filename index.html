@@ -30,8 +30,44 @@ body{
 .logo{
     font-size:28px;
     font-weight:bold;
+    color:white;
 }
 
+.nav{
+    display:flex;
+    gap:30px;
+}
+
+    .nav a{
+
+    display:flex;
+    align-items:center;
+    gap:8px;
+
+    color:#8db9ff;
+
+    text-decoration:none;
+
+    font-size:19px;
+    font-weight:bold;
+
+    transition:.2s;
+
+}
+
+.nav a:hover{
+
+    color:white;
+    transform:scale(1.05);
+
+}
+
+.nav a.active{
+
+    color:white;
+
+}
+    
 .search{
     background:#151515;
     border:1px solid #333;
@@ -119,38 +155,6 @@ body{
 .card h3{
     font-size:16px;
     margin-top:10px;
-}
-
-.nav{
-
-    display:flex;
-    gap:28px;
-
-}
-
-.nav a{
-
-    text-decoration:none;
-
-    color:#bdbdbd;
-
-    font-size:20px;
-    font-weight:bold;
-
-    transition:.2s;
-
-}
-
-.nav a:hover{
-
-    color:white;
-
-}
-
-.nav a.active{
-
-    color:white;
-
 }
     
 </style>
