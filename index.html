@@ -27,10 +27,30 @@ body{
     align-items:center;
 }
 
-.logo{
+.logo,
+.logo:visited{
+
+    color:white;
+
+    text-decoration:none;
+
     font-size:28px;
     font-weight:bold;
-    color:white;
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    transition:.2s;
+
+}
+
+.logo:hover{
+
+    color:#8db9ff;
+
+    transform:scale(1.03);
+
 }
 
 .nav{
@@ -184,7 +204,11 @@ body{
 
     <div style="display:flex;align-items:center;gap:40px;">
 
-        <div class="logo">C's Movies</div>
+        <a href="index.html" class="logo">
+
+            🎬 C's Movies
+
+        </a>
 
         <nav class="nav">
 
