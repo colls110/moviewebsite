@@ -493,19 +493,13 @@ document.addEventListener("keydown", (e) => {
         // Volume Up
         case "arrowup":
             e.preventDefault();
-
-            video.volume = Math.min(1, video.volume + 0.05);
-            volume.value = video.volume;
-
+            setVolume(video.volume + .05);
             break;
 
         // Volume Down
         case "arrowdown":
             e.preventDefault();
-
-            video.volume = Math.max(0, video.volume - 0.05);
-            volume.value = video.volume;
-
+            setVolume(video.volume + .05);
             break;
 
     }
@@ -657,6 +651,18 @@ function skip(seconds){
     saveProgress();
 }
 
+function setVolume(value){
+
+    video.volume = value;
+    video.muted = value == 0;
+
+    volume.value = value;
+
+    mute.textContent =
+        value == 0 ? "🔇" : "🔊";
+
+}
+
 function toggleFullscreen(){
 
     if(document.fullscreenElement){
@@ -761,41 +767,11 @@ progress.oninput = () => {
 
 }
 
-volume.oninput = () => {
-
-    video.volume = volume.value;
-    video.muted = video.volume == 0;
-
-    mute.textContent =
-        video.volume == 0 ? "🔇" : "🔊";
-
-};
+volume.oninput = () => setVolume(Number(volume.value));
 
 let lastVolume = 1;
 
-mute.onclick = () => {
-
-    if (!video.muted && video.volume > 0) {
-
-        lastVolume = video.volume;
-
-        video.muted = true;
-        video.volume = 0;
-        volume.value = 0;
-
-        mute.textContent = "🔇";
-
-    } else {
-
-        video.muted = false;
-        video.volume = lastVolume;
-        volume.value = lastVolume;
-
-        mute.textContent = "🔊";
-
-    }
-
-};
+mute.onclick = () => setVolume(0);
 
 fullscreen.onclick=()=>toggleFullscreen();
 
