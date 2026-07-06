@@ -475,7 +475,7 @@ document.addEventListener("keydown", (e) => {
         // Mute
         case "m":
             e.preventDefault();
-            mute.click();
+            toggleMute();
             break;
 
         // Rewind 10s
@@ -651,15 +651,31 @@ function skip(seconds){
     saveProgress();
 }
 
-function setVolume(value){
+function setVolume(value) {
+
+    value = Math.max(0, Math.min(1, value));
 
     video.volume = value;
-    video.muted = value == 0;
+    video.muted = value === 0;
 
     volume.value = value;
 
-    mute.textContent =
-        value == 0 ? "🔇" : "🔊";
+    mute.textContent = value === 0 ? "🔇" : "🔊";
+
+}
+
+function toggleMute() {
+
+    if (video.volume > 0) {
+
+        lastVolume = video.volume;
+        setVolume(0);
+
+    } else {
+
+        setVolume(lastVolume);
+
+    }
 
 }
 
@@ -771,7 +787,7 @@ volume.oninput = () => setVolume(Number(volume.value));
 
 let lastVolume = 1;
 
-mute.onclick = () => setVolume(0);
+mute.onclick = () => toggleMute;
 
 fullscreen.onclick=()=>toggleFullscreen();
 
