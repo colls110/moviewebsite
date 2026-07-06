@@ -542,11 +542,12 @@ const progressKey = `progress-${videop.id}`;
 
 const savedVolume = localStorage.getItem("player-volume");
 
+let lastVolume = 1;
+
 if (savedVolume !== null) {
 
     lastVolume = Number(savedVolume);
     setVolume(lastVolume);
-
 }
 
 document.getElementById("videoTitle").textContent = videop.title;
@@ -794,7 +795,6 @@ progress.oninput = () => {
 
 volume.oninput = () => setVolume(Number(volume.value));
 
-let lastVolume = 1;
 
 mute.onclick = () => toggleMute();
 
