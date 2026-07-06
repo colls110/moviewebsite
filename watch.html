@@ -463,30 +463,13 @@ document.addEventListener("keydown", (e) => {
         case " ":
         case "k":
             e.preventDefault();
-
-            if (video.paused) {
-                video.play();
-                showCenterIcon("▶️");
-                saveProgress();
-            } 
-            else {
-                video.pause();
-                showCenterIcon("⏸️");
-                saveProgress();
-            }
-                
-
+            togglePlay();
             break;
 
         // Fullscreen
         case "f":
             e.preventDefault();
-
-            if (!document.fullscreenElement)
-                document.querySelector(".player").requestFullscreen();
-            else
-                document.exitFullscreen();
-
+            toggleFullscreen();
             break;
 
         // Mute
@@ -498,15 +481,13 @@ document.addEventListener("keydown", (e) => {
         // Rewind 10s
         case "arrowleft":
             e.preventDefault();
-            video.currentTime = Math.max(0, video.currentTime - 10);
-            saveProgress();
+            skip(-10)
             break;
 
         // Forward 10s
         case "arrowright":
             e.preventDefault();
-            video.currentTime = Math.min(video.duration, video.currentTime + 10);
-            saveProgress();
+            skip(10)
             break;
 
         // Volume Up
@@ -653,6 +634,42 @@ function showCenterIcon(icon){
 
 }
 
+function togglePlay() {
+
+    if (video.paused) {
+        video.play();
+        showCenterIcon("▶️");
+    } else {
+        video.pause();
+        showCenterIcon("⏸️");
+    }
+
+    saveProgress();
+}
+
+function skip(seconds){
+
+    video.currentTime = Math.min(
+        video.duration,
+        Math.max(0, video.currentTime + seconds)
+    );
+
+    saveProgress();
+}
+
+function toggleFullscreen(){
+
+    if(document.fullscreenElement){
+
+        document.exitFullscreen();
+
+    }else{
+
+        player.requestFullscreen();
+
+    }
+}
+
 video.onloadedmetadata = () => {
 
     progress.max = video.duration;
@@ -718,34 +735,11 @@ video.addEventListener("ended", () => {
 
 progress.addEventListener("change", saveProgress);
 
-play.onclick=()=>{
-
-    if(video.paused){
-
-        video.play();
-
-    }else{
-
-        video.pause();
-
-    }
-
-}
-
 video.onplay=()=>play.textContent="⏸️";
 video.onpause=()=>play.textContent="▶️";
 
-rewind.onclick=()=>{
-
-    video.currentTime=Math.max(0,video.currentTime-10);
-    saveProgress();
-}
-
-forward.onclick=()=>{
-
-    video.currentTime=Math.min(video.duration,video.currentTime+10);
-    saveProgress();
-}
+rewind.onclick = () => skip(-10);
+forward.onclick = () => skip(10);
 
 video.ontimeupdate=()=>{
 
@@ -756,29 +750,10 @@ video.ontimeupdate=()=>{
 
 }
 
-video.addEventListener("click", () => {
+play.onclick = togglePlay;
 
-    if (video.paused) {
-        video.play();
-        showCenterIcon("▶️");
-    }
-        
-    else {
-        video.pause();
-        showCenterIcon("⏸️");
-    }
-        
-
-});
-
-video.addEventListener("dblclick", () => {
-
-    if (!document.fullscreenElement)
-        document.querySelector(".player").requestFullscreen();
-    else
-        document.exitFullscreen();
-
-});
+video.addEventListener("click", togglePlay);
+video.addEventListener("dblclick", toggleFullscreen);
 
 progress.oninput = () => {
 
@@ -822,19 +797,7 @@ mute.onclick = () => {
 
 };
 
-fullscreen.onclick=()=>{
-
-    if(!document.fullscreenElement){
-
-        document.querySelector(".player").requestFullscreen();
-
-    }else{
-
-        document.exitFullscreen();
-
-    }
-
-}
+fullscreen.onclick=()=>toggleFullscreen();
 
 jumpInput.addEventListener("keydown",e=>{
 
