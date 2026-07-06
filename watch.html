@@ -671,22 +671,27 @@ function setVolume(value) {
     volume.value = value;
 
     mute.textContent = value === 0 ? "🔇" : "🔊";
+
+    if (value > 0) {
+        lastVolume = value;
+    }
+
     localStorage.setItem("player-volume", value);
+
 }
 
 function toggleMute() {
 
-    if (video.volume > 0) {
+    if (video.muted || video.volume === 0) {
+
+        setVolume(lastVolume);
+
+    } else {
 
         lastVolume = video.volume;
         setVolume(0);
 
-    } else {
-
-        setVolume(lastVolume);
-
     }
-
 }
 
 function toggleFullscreen(){
