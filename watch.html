@@ -448,128 +448,41 @@ value="1">
 
 <script>
 
-document.addEventListener("keydown", (e) => {
-
-    showUI();
-
-    // Ignore shortcuts while typing in an input
-    if (e.target.tagName === "INPUT")
-        return;
-
-
-    switch (e.key.toLowerCase()) {
-
-        // Play / Pause
-        case " ":
-        case "k":
-            e.preventDefault();
-            togglePlay();
-            break;
-
-        // Fullscreen
-        case "f":
-            e.preventDefault();
-            toggleFullscreen();
-            break;
-
-        // Mute
-        case "m":
-            e.preventDefault();
-            toggleMute();
-            break;
-
-        // Rewind 10s
-        case "arrowleft":
-            e.preventDefault();
-            skip(-10)
-            break;
-
-        // Forward 10s
-        case "arrowright":
-            e.preventDefault();
-            skip(10)
-            break;
-
-        // Volume Up
-        case "arrowup":
-            e.preventDefault();
-            setVolume(video.volume + .05);
-            break;
-
-        // Volume Down
-        case "arrowdown":
-            e.preventDefault();
-            setVolume(video.volume + .05);
-            break;
-
-    }
-
-});
-
 const video = document.getElementById("video");
+const progress = document.getElementById("progress");
+const fullscreen = document.getElementById("fullscreen");
+const time = document.getElementById("time");
+
+const player = document.querySelector(".player");
 
 const play = document.getElementById("play");
 const rewind = document.getElementById("rewind");
 const forward = document.getElementById("forward");
-
-const progress = document.getElementById("progress");
+const back = document.getElementById("back");
 
 const mute = document.getElementById("mute");
 const volume = document.getElementById("volume");
-
-const fullscreen = document.getElementById("fullscreen");
-
-const time = document.getElementById("time");
-
-const player = document.querySelector(".player");
 
 const jumpTime = document.getElementById("jumpTime");
 const jumpPopup = document.getElementById("jumpPopup");
 const jumpInput = document.getElementById("jumpInput");
 const jumpGo = document.getElementById("jumpGo");
 
-const back = document.getElementById("back");
-
 const centerIcon = document.getElementById("centerIcon");
 
+
+
 const videos = JSON.parse(sessionStorage.getItem("videos"));
-
 const id = new URLSearchParams(window.location.search).get("id");
-
 const videop = videos.find(v => v.id === id);
-
 const progressKey = `progress-${videop.id}`;
-
 const savedVolume = localStorage.getItem("player-volume");
 
 let lastVolume = 1;
-
-if (savedVolume !== null) {
-
-    lastVolume = Number(savedVolume);
-    setVolume(lastVolume);
-}
-
-document.getElementById("videoTitle").textContent = videop.title;
-
-document.title = videop.title;
-
-video.src = videop.video;
-video.load();
-video.play().catch(err => {
-
-    console.log("Autoplay blocked", err);
-
-});
-
-if (!videop) {
-
-    alert("Video not found.");
-    window.location.href = "index.html";
-
-}
-
 let hideTimer;
+let captionsEnabled = false;
+
+initPlayer();
 
 function showUI(){
 
@@ -707,6 +620,59 @@ function toggleFullscreen(){
     }
 }
 
+function initPlayer() {
+
+    if (!videop) {
+
+        alert("Video not found.");
+        window.location.href = "index.html";
+        return;
+
+    }
+
+    document.getElementById("videoTitle").textContent = videop.title;
+    document.title = videop.title;
+
+    video.src = videop.video;
+    video.load();
+
+    loadVolume();
+
+    video.play().catch(err => {
+        console.log("Autoplay blocked", err);
+    });
+
+}
+
+function loadVolume() {
+
+    const savedVolume = localStorage.getItem("player-volume");
+
+    if (savedVolume === null)
+        return;
+
+    const value = Number(savedVolume);
+
+    setVolume(value);
+
+    if (value > 0) {
+        lastVolume = value;
+    }
+
+}
+
+function loadProgress() {
+
+    progress.max = video.duration;
+
+    const savedTime = Number(localStorage.getItem(progressKey));
+
+    if (!isNaN(savedTime) && savedTime < video.duration - 10) {
+        video.currentTime = savedTime;
+    }
+
+}
+
 video.onloadedmetadata = () => {
 
     progress.max = video.duration;
@@ -725,6 +691,64 @@ video.onloadedmetadata = () => {
     }
 
 };
+
+document.addEventListener("keydown", (e) => {
+
+    showUI();
+
+    // Ignore shortcuts while typing in an input
+    if (e.target.tagName === "INPUT")
+        return;
+
+
+    switch (e.key.toLowerCase()) {
+
+        // Play / Pause
+        case " ":
+        case "k":
+            e.preventDefault();
+            togglePlay();
+            break;
+
+        // Fullscreen
+        case "f":
+            e.preventDefault();
+            toggleFullscreen();
+            break;
+
+        // Mute
+        case "m":
+            e.preventDefault();
+            toggleMute();
+            break;
+
+        // Rewind 10s
+        case "arrowleft":
+            e.preventDefault();
+            skip(-10)
+            break;
+
+        // Forward 10s
+        case "arrowright":
+            e.preventDefault();
+            skip(10)
+            break;
+
+        // Volume Up
+        case "arrowup":
+            e.preventDefault();
+            setVolume(video.volume + .05);
+            break;
+
+        // Volume Down
+        case "arrowdown":
+            e.preventDefault();
+            setVolume(video.volume + .05);
+            break;
+
+    }
+
+});
 
 back.onclick = () => {
 
@@ -817,7 +841,6 @@ jumpInput.addEventListener("keydown",e=>{
 
 const captions = document.getElementById("captions");
 
-let captionsEnabled = false;
 
 captions.onclick = () => {
 
