@@ -681,6 +681,12 @@ document.addEventListener("keydown", (e) => {
             toggleMute();
             break;
 
+        // Captions
+        case "c":
+            e.preventDefault();
+            toggleCaptions();
+            break;
+
         // Rewind 10s
         case "arrowleft":
             e.preventDefault();
