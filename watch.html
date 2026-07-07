@@ -488,6 +488,46 @@ input[type="range"]:active::-moz-range-thumb{
     transform:scale(1.15);
 }
 
+.progress-container{
+    position:relative;
+}
+
+#progressBubble{
+
+    position:absolute;
+
+    bottom:22px;
+
+    left:0;
+
+    transform:translateX(-50%);
+
+    padding:5px 10px;
+
+    border-radius:999px;
+
+    background:rgba(20,20,20,.9);
+
+    color:white;
+
+    font-size:13px;
+
+    pointer-events:none;
+
+    opacity:0;
+
+    transition:
+        opacity .15s,
+        transform .15s;
+
+}
+
+#progressBubble.show{
+
+    opacity:1;
+
+}
+
 </style>
 
 </head>
@@ -509,6 +549,14 @@ input[type="range"]:active::-moz-range-thumb{
 <div class="bottom">
 
 <input id="progress" type="range" min="0" max="100" step="any" value="0">
+
+<div class="progress-container">
+
+    <input id="progress" type="range">
+
+    <div id="progressBubble">0:00</div>
+
+</div>
 
 <div class="info">
 
@@ -616,6 +664,8 @@ const jumpGo = document.getElementById("jumpGo");
 const centerIcon = document.getElementById("centerIcon");
 
 const captions = document.getElementById("captions");
+
+const progressBubble = document.getElementById("progressBubble");
 
 const speed = document.getElementById("speed");
 const speedSlider = document.getElementById("speedSlider");
@@ -749,6 +799,13 @@ player.addEventListener("mousemove", showUI);
 player.addEventListener("mouseenter", showUI);
 
 progress.addEventListener("change", saveProgress);
+progress.addEventListener("pointerdown", () => {
+    progressBubble.classList.add("show");
+});
+
+document.addEventListener("pointerup", () => {
+    progressBubble.classList.remove("show");
+});
 
 window.addEventListener("beforeunload", saveProgress);
 
@@ -830,7 +887,7 @@ function initPlayer() {
 
     loadVolume();
     loadPlaybackSpeed();
-    
+
     updateSlider(progress);
     updateSlider(volume);
     updateSlider(speedSlider);
@@ -1065,6 +1122,18 @@ function parseTime(text){
 
     }
     return null;
+}
+
+function updateProgressBubble(){
+
+    const percent = progress.value / progress.max;
+
+    progressBubble.textContent =
+        format(video.currentTime);
+
+    progressBubble.style.left =
+        `${percent * 100}%`;
+
 }
 
 function updateSlider(slider) {
