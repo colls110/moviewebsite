@@ -221,35 +221,43 @@ body{
 
     <div class="layout">
 
-        <div class="thumbnail"></div>
+        <div id="thumbnail" class="thumbnail"></div>
 
-        <div>
+        <div class="title" id="title"></div>
 
-            <div class="title">
-                How Much Does It Cost Dexter To Kill One Person?
-            </div>
+        <div class="meta" id="meta"></div>
 
-            <div class="meta">
-                🎬 Dexter • 🕒 12:45 • 📅 July 2026
-            </div>
+        <div class="description" id="description"></div>
 
-            <div class="description">
-
-                This video breaks down every expense Dexter likely pays throughout
-                the series, from plastic wrap and knives to vehicles, apartments,
-                and other hidden costs.
-
-            </div>
-
-            <a class="watch" href="watch.html?id=dexter-cost">
-                ▶ Watch Now
-            </a>
-
-        </div>
+        <a class="watch" id="watch">
+            ▶ Watch Now
+        </a>
 
     </div>
-
 </div>
+
+<script>
+    const typeEmoji = video.type === "show" ? "📺" : "🎬";
+    const typeText = video.type === "show" ? "Show" : "Movie";
+
+    document.getElementById("title").textContent = video.title;
+
+document.getElementById("meta").textContent =
+    `${typeEmoji} ${typeText} • 🕒 ${video.time} • 📅 ${video.date}`;
+
+document.getElementById("description").textContent = video.description;
+
+document.getElementById("watch").href = `watch.html?id=${video.id}`;
+
+if (video.thumbnail) {
+    document.getElementById("thumbnail").style.backgroundImage =
+        `url("${video.thumbnail}")`;
+
+    document.getElementById("thumbnail").style.backgroundSize = "cover";
+    document.getElementById("thumbnail").style.backgroundPosition = "center";
+}
+
+</script>
 
 </body>
 </html>
