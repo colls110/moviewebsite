@@ -191,6 +191,11 @@ button:hover{
 
 #volume{
 
+    appearance:none;
+    -webkit-appearance:none;
+
+    background:transparent;
+
     position:absolute;
 
     left:50%;
@@ -222,7 +227,39 @@ button:hover{
 
 }
 
+#volume::-webkit-slider-runnable-track,
+#speedSlider::-webkit-slider-runnable-track{
+
+    height:8px;          /* Increase this */
+    border-radius:999px;
+
+    background:#777;
+
+}
+
+#volume::-webkit-slider-thumb,
+#speedSlider::-webkit-slider-thumb{
+
+    -webkit-appearance:none;
+
+    width:16px;
+    height:16px;
+
+    border-radius:50%;
+    background:white;
+
+    margin-top:-4px;     /* Half of track height */
+
+    cursor:pointer;
+
+}
+
 #speedSlider{
+
+    appearance:none;
+    -webkit-appearance:none;
+
+    background:transparent;
 
     position:absolute;
 
@@ -237,23 +274,6 @@ button:hover{
     pointer-events:none;
 
     transition:.2s;
-
-}
-
-#volume::-webkit-slider-thumb,
-#speedSlider::-webkit-slider-thumb{
-
-    -webkit-appearance:none;
-
-    width:18px;
-    height:18px;
-
-    border-radius:50%;
-    background:white;
-
-    margin-top:-5px;
-
-    cursor:pointer;
 
 }
 
