@@ -448,7 +448,7 @@ value="1">
 
 <script>
 
-//CONSTANTS --------------------
+//CONSTANTS ------------------------
 const video = document.getElementById("video");
 const progress = document.getElementById("progress");
 const fullscreen = document.getElementById("fullscreen");
@@ -473,7 +473,7 @@ const centerIcon = document.getElementById("centerIcon");
 
 const captions = document.getElementById("captions");
 
-//VARIABLES ----------------
+//VARIABLES ------------------------
 const videos = JSON.parse(sessionStorage.getItem("videos"));
 const id = new URLSearchParams(window.location.search).get("id");
 const videop = videos.find(v => v.id === id);
@@ -485,11 +485,11 @@ let hideTimer;
 let captionsEnabled = false;
 
 
-//INIT ----------------
+//INIT ------------------------
 initPlayer();
 
 
-//EVENT LISTENERS --------------
+//EVENT LISTENERS ------------------------
 document.addEventListener("keydown", (e) => {
 
     showUI();
@@ -592,7 +592,7 @@ jumpInput.addEventListener("keydown", (e) => {
     }
 });
 
-//EVENT FUNCTIONS ------------------------------
+//EVENT FUNCTIONS ------------------------
 video.onplay=()=>play.textContent="⏸️";
 video.onpause=()=>play.textContent="▶️";
 
@@ -613,6 +613,8 @@ mute.onclick = () => toggleMute();
 
 captions.onclick = () => toggleCaptions();
 
+jumpGo.onclick = jumpToTime;
+jumpPopup.onclick = (e)=>{e.stopPropagation();};
 jumpTime.onclick = (e) => {
 
     e.stopPropagation();
@@ -623,14 +625,33 @@ jumpTime.onclick = (e) => {
 
         jumpInput.focus();
         jumpInput.select();
+    }
+};
+
+
+//FUNCTIONS ------------------------
+function initPlayer() {
+
+    if (!videop) {
+
+        alert("Video not found.");
+        window.location.href = "index.html";
+        return;
 
     }
 
-};
+    document.getElementById("videoTitle").textContent = videop.title;
+    document.title = videop.title;
 
-jumpGo.onclick = jumpToTime;
+    video.src = videop.video;
+    video.load();
 
-jumpPopup.onclick = (e)=>{e.stopPropagation();};
+    loadVolume();
+
+    video.play().catch(err => {
+        console.log("Autoplay blocked", err);
+    });
+}
 
 function showUI(){
 
@@ -645,9 +666,151 @@ function showUI(){
             player.classList.add("hide-ui");
 
         },2500);
+    }
+}
 
+function showCenterIcon(icon){
+
+    centerIcon.textContent = icon;
+
+    centerIcon.classList.add("show");
+
+    clearTimeout(centerIcon.timer);
+
+    centerIcon.timer = setTimeout(()=>{
+
+        centerIcon.classList.remove("show");
+
+    },350);
+}
+
+function togglePlay() {
+
+    if (video.paused) {
+        video.play();
+        showCenterIcon("▶️");
+    } else {
+        video.pause();
+        showCenterIcon("⏸️");
     }
 
+    saveProgress();
+}
+
+function skip(seconds){
+
+    video.currentTime = Math.min(
+        video.duration,
+        Math.max(0, video.currentTime + seconds)
+    );
+
+    saveProgress();
+}
+
+function jumpToTime() {
+
+    const seconds = parseTime(jumpInput.value);
+
+    if (seconds == null)
+        return;
+
+    video.currentTime = Math.min(
+        Math.max(seconds, 0),
+        video.duration
+    );
+
+    saveProgress();
+
+    jumpPopup.classList.remove("show");
+}
+
+function toggleFullscreen(){
+
+    if(document.fullscreenElement){
+        document.exitFullscreen();
+    }else{
+        player.requestFullscreen();
+    }
+}
+
+function setVolume(value) {
+
+    value = Math.max(0, Math.min(1, value));
+
+    video.volume = value;
+    video.muted = value === 0;
+
+    volume.value = value;
+
+    mute.textContent = value === 0 ? "🔇" : "🔊";
+
+    if (value > 0) {
+        lastVolume = value;
+    }
+
+    localStorage.setItem("player-volume", value);
+}
+
+function toggleMute() {
+
+    if (video.muted || video.volume === 0) {
+
+        setVolume(lastVolume);
+    } else {
+
+        lastVolume = video.volume;
+        setVolume(0);
+    }
+}
+
+function toggleCaptions() {
+
+    captionsEnabled = !captionsEnabled;
+    
+    captions.classList.toggle("active", captionsEnabled);
+}
+
+function loadVolume() {
+
+    const savedVolume = localStorage.getItem("player-volume");
+
+    if (savedVolume === null)
+        return;
+
+    const value = Number(savedVolume);
+
+    setVolume(value);
+
+    if (value > 0) {
+        lastVolume = value;
+    }
+}
+
+function loadProgress() {
+
+    progress.max = video.duration;
+
+    const savedTime = Number(localStorage.getItem(progressKey));
+
+    if (!isNaN(savedTime) && savedTime < video.duration - 10) {
+        video.currentTime = savedTime;
+    }
+}
+
+function format(seconds){
+
+    if(isNaN(seconds)) return "0:00";
+
+    const mins=Math.floor(seconds/60);
+
+    const secs=Math.floor(seconds%60);
+
+    return `${mins}:${secs.toString().padStart(2,"0")}`;
+
+}
+
+function saveProgress() {
+    localStorage.setItem(progressKey, video.currentTime);
 }
 
 function parseTime(text){
@@ -678,188 +841,7 @@ function parseTime(text){
                parts[2];
 
     }
-
     return null;
-
-}
-
-function showCenterIcon(icon){
-
-    centerIcon.textContent = icon;
-
-    centerIcon.classList.add("show");
-
-    clearTimeout(centerIcon.timer);
-
-    centerIcon.timer = setTimeout(()=>{
-
-        centerIcon.classList.remove("show");
-
-    },350);
-
-}
-
-function togglePlay() {
-
-    if (video.paused) {
-        video.play();
-        showCenterIcon("▶️");
-    } else {
-        video.pause();
-        showCenterIcon("⏸️");
-    }
-
-    saveProgress();
-}
-
-function toggleCaptions() {
-
-    captionsEnabled = !captionsEnabled;
-    
-    captions.classList.toggle("active", captionsEnabled);
-}
-
-function skip(seconds){
-
-    video.currentTime = Math.min(
-        video.duration,
-        Math.max(0, video.currentTime + seconds)
-    );
-
-    saveProgress();
-}
-
-function setVolume(value) {
-
-    value = Math.max(0, Math.min(1, value));
-
-    video.volume = value;
-    video.muted = value === 0;
-
-    volume.value = value;
-
-    mute.textContent = value === 0 ? "🔇" : "🔊";
-
-    if (value > 0) {
-        lastVolume = value;
-    }
-
-    localStorage.setItem("player-volume", value);
-
-}
-
-function toggleMute() {
-
-    if (video.muted || video.volume === 0) {
-
-        setVolume(lastVolume);
-
-    } else {
-
-        lastVolume = video.volume;
-        setVolume(0);
-
-    }
-}
-
-function toggleFullscreen(){
-
-    if(document.fullscreenElement){
-
-        document.exitFullscreen();
-
-    }else{
-
-        player.requestFullscreen();
-
-    }
-}
-
-function initPlayer() {
-
-    if (!videop) {
-
-        alert("Video not found.");
-        window.location.href = "index.html";
-        return;
-
-    }
-
-    document.getElementById("videoTitle").textContent = videop.title;
-    document.title = videop.title;
-
-    video.src = videop.video;
-    video.load();
-
-    loadVolume();
-
-    video.play().catch(err => {
-        console.log("Autoplay blocked", err);
-    });
-
-}
-
-function loadVolume() {
-
-    const savedVolume = localStorage.getItem("player-volume");
-
-    if (savedVolume === null)
-        return;
-
-    const value = Number(savedVolume);
-
-    setVolume(value);
-
-    if (value > 0) {
-        lastVolume = value;
-    }
-
-}
-
-function loadProgress() {
-
-    progress.max = video.duration;
-
-    const savedTime = Number(localStorage.getItem(progressKey));
-
-    if (!isNaN(savedTime) && savedTime < video.duration - 10) {
-        video.currentTime = savedTime;
-    }
-
-}
-
-function format(seconds){
-
-    if(isNaN(seconds)) return "0:00";
-
-    const mins=Math.floor(seconds/60);
-
-    const secs=Math.floor(seconds%60);
-
-    return `${mins}:${secs.toString().padStart(2,"0")}`;
-
-}
-
-function saveProgress() {
-    localStorage.setItem(progressKey, video.currentTime);
-}
-
-function jumpToTime() {
-
-    const seconds = parseTime(jumpInput.value);
-
-    if (seconds == null)
-        return;
-
-    video.currentTime = Math.min(
-        Math.max(seconds, 0),
-        video.duration
-    );
-
-    saveProgress();
-
-    jumpPopup.classList.remove("show");
-
 }
 
 setInterval(() => {
