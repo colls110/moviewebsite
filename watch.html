@@ -216,6 +216,72 @@ button:hover{
 
 }
 
+.speed{
+
+    position:relative;
+    display:flex;
+    align-items:center;
+
+}
+
+#speedSlider{
+
+    position:absolute;
+
+    left:50%;
+    bottom:75px;
+
+    transform:translateX(-50%) rotate(-90deg);
+
+    width:90px;
+
+    opacity:0;
+    pointer-events:none;
+
+    transition:.2s;
+
+}
+
+.speed:hover #speedSlider{
+
+    opacity:1;
+    pointer-events:auto;
+
+}
+
+#speedDisplay{
+
+    position:absolute;
+
+    right:55px;
+    top:50%;
+
+    transform:translateY(-50%);
+
+    padding:5px 10px;
+
+    border-radius:999px;
+
+    background:rgba(20,20,20,.85);
+
+    color:white;
+
+    font-size:14px;
+
+    opacity:0;
+
+    transition:opacity .2s;
+
+    pointer-events:none;
+
+}
+
+#speedDisplay.show{
+
+    opacity:1;
+
+}
+
 .jump-container{
 
     position:relative;
@@ -417,6 +483,22 @@ value="1">
 
 <div class="right">
 
+    <div class="speed">
+
+        <button id="speed">🔄</button>
+
+        <input
+            id="speedSlider"
+            type="range"
+            min="0.1"
+            max="5"
+            step="0.1"
+            value="1">
+
+        <div id="speedDisplay">1×</div>
+
+    </div>
+
     <div class="jump-container">
 
         <button id="jumpTime">🕒</button>
@@ -472,6 +554,10 @@ const centerIcon = document.getElementById("centerIcon");
 
 const captions = document.getElementById("captions");
 
+const speed = document.getElementById("speed");
+const speedSlider = document.getElementById("speedSlider");
+const speedDisplay = document.getElementById("speedDisplay");
+
 //VARIABLES ------------------------
 const videos = JSON.parse(sessionStorage.getItem("videos"));
 const id = new URLSearchParams(window.location.search).get("id");
@@ -482,7 +568,7 @@ let lastVolume = 1;
 let playbackSpeed = 1;
 let hideTimer;
 let captionsEnabled = false;
-
+let speedTimer;
 
 //INIT ------------------------
 initPlayer();
@@ -609,6 +695,24 @@ forward.onclick = () => skip(10);
 volume.oninput = () => setVolume(Number(volume.value));
 mute.onclick = () => toggleMute();
 
+speedSlider.oninput = () => {
+
+    playbackSpeed = Number(speedSlider.value);
+
+    video.playbackRate = playbackSpeed;
+
+    speedDisplay.textContent =
+        `${playbackSpeed.toFixed(1)}×`;
+
+    showSpeedDisplay();
+
+    localStorage.setItem(
+        "player-speed",
+        playbackSpeed
+    );
+
+}
+
 captions.onclick = () => toggleCaptions();
 
 jumpGo.onclick = jumpToTime;
@@ -644,7 +748,8 @@ function initPlayer() {
     video.load();
 
     loadVolume();
-
+    loadPlaybackSpeed();
+    
     video.play().catch(err => {
         console.log("Autoplay blocked", err);
     });
@@ -739,6 +844,20 @@ function setVolume(value) {
     localStorage.setItem("player-volume", value);
 }
 
+function showSpeedDisplay() {
+
+    speedDisplay.classList.add("show");
+
+    clearTimeout(speedTimer);
+
+    speedTimer = setTimeout(() => {
+
+        speedDisplay.classList.remove("show");
+
+    }, 800);
+
+}
+
 function toggleMute() {
 
     if (video.muted || video.volume === 0) {
@@ -785,6 +904,24 @@ function loadVolume() {
     if (value > 0) {
         lastVolume = value;
     }
+}
+
+function loadPlaybackSpeed() {
+
+    const saved = Number(localStorage.getItem("player-speed"));
+
+    if (isNaN(saved))
+        return;
+
+    playbackSpeed = saved;
+
+    video.playbackRate = playbackSpeed;
+
+    speedSlider.value = playbackSpeed;
+
+    speedDisplay.textContent =
+        `${playbackSpeed.toFixed(1)}×`;
+
 }
 
 function loadProgress() {
