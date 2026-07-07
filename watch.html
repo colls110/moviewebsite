@@ -540,7 +540,7 @@ document.addEventListener("keydown", (e) => {
         // Volume Down
         case "arrowdown":
             e.preventDefault();
-            setVolume(video.volume + .05);
+            setVolume(video.volume - .05);
             break;
     }
 });
@@ -551,21 +551,7 @@ document.addEventListener("click",()=>{
 
 });
 
-video.onloadedmetadata = () => {
-
-    progress.max = video.duration;
-
-    const savedTime = localStorage.getItem(progressKey);
-
-    if (savedTime) {
-
-        const seconds = Number(savedTime);
-
-        if (seconds < video.duration - 10) {
-            video.currentTime = seconds;
-        }
-    }
-};
+video.onloadedmetadata = loadProgress;
 
 video.addEventListener("pause",()=>{
 
@@ -610,11 +596,15 @@ jumpInput.addEventListener("keydown", (e) => {
 video.onplay=()=>play.textContent="⏸️";
 video.onpause=()=>play.textContent="▶️";
 
-play.onclick = togglePlay();
+play.onclick = togglePlay;
 back.onclick = () => {window.location.href = "index.html";};
 fullscreen.onclick=()=>toggleFullscreen();
 
-progress.oninput = () => {video.currentTime = progress.value;};
+progress.oninput = () => {
+    video.currentTime = progress.value;
+    saveProgress();
+};
+
 rewind.onclick = () => skip(-10);
 forward.onclick = () => skip(10);
 
@@ -638,7 +628,7 @@ jumpTime.onclick = (e) => {
 
 };
 
-jumpGo.onclick = jumpToTime();
+jumpGo.onclick = jumpToTime;
 
 jumpPopup.onclick = (e)=>{e.stopPropagation();};
 
