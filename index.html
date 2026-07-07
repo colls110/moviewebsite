@@ -53,6 +53,14 @@ body{
 
 }
 
+.card,
+.card:visited{
+
+    color:white;
+    text-decoration:none;
+
+}
+
 .nav{
     display:flex;
     gap:30px;
@@ -249,7 +257,7 @@ function formatTime(seconds){
 
 }
 
-const API_URL = "https://colls112.pythonanywhere.com/api/videos";
+const API_URL = "https://movie-backend-smoky.vercel.app/api/videos";
 
 async function loadVideos() {
 
