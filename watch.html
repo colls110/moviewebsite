@@ -114,28 +114,6 @@ video{
 
 }
 
-#speedPopup{
-
-    position:absolute;
-
-    bottom:55px;
-
-    left:50%;
-
-    transform:translateX(-50%) translateY(10px);
-
-}
-
-#speedPopup.show{
-
-    transform:translateX(-50%) translateY(0);
-
-}
-
-.speed-container{
-    position:relative;
-}
-
 .info{
 
     color:white;
@@ -239,12 +217,6 @@ button:hover{
 }
 
 .jump-container{
-
-    position:relative;
-
-}
-
-.speed-container{
 
     position:relative;
 
@@ -445,23 +417,6 @@ value="1">
 
 <div class="right">
 
-    <div class="speed-container">
-
-        <button id="speed">1x</button>
-
-        <div id="speedPopup" class="jump-popup">
-
-            <input
-                id="speedInput"
-                type="text"
-                placeholder="1.25">
-
-            <button id="speedGo">Set</button>
-
-        </div>
-
-    </div>
-
     <div class="jump-container">
 
         <button id="jumpTime">🕒</button>
@@ -512,11 +467,6 @@ const jumpTime = document.getElementById("jumpTime");
 const jumpPopup = document.getElementById("jumpPopup");
 const jumpInput = document.getElementById("jumpInput");
 const jumpGo = document.getElementById("jumpGo");
-
-const speed = document.getElementById("speed");
-const speedPopup = document.getElementById("speedPopup");
-const speedInput = document.getElementById("speedInput");
-const speedGo = document.getElementById("speedGo");
 
 const centerIcon = document.getElementById("centerIcon");
 
@@ -597,7 +547,6 @@ document.addEventListener("keydown", (e) => {
 document.addEventListener("click",()=>{
 
     jumpPopup.classList.remove("show");
-    speedPopup.classList.remove("show");
 });
 
 video.onloadedmetadata = loadProgress;
@@ -641,14 +590,6 @@ jumpInput.addEventListener("keydown", (e) => {
     }
 });
 
-speedInput.addEventListener("keydown",(e)=>{
-
-    if(e.key==="Enter"){
-        setPlaybackSpeed();
-    }
-
-});
-
 //EVENT FUNCTIONS ------------------------
 video.onplay=()=>play.textContent="⏸️";
 video.onpause=()=>play.textContent="▶️";
@@ -685,22 +626,6 @@ jumpTime.onclick = (e) => {
     }
 };
 
-speedPopup.onclick = (e)=>e.stopPropagation();
-speedGo.onclick = setPlaybackSpeed;
-speed.onclick = (e)=>{
-
-    e.stopPropagation();
-
-    speedPopup.classList.toggle("show");
-
-    if(speedPopup.classList.contains("show")){
-
-        speedInput.focus();
-        speedInput.select();
-
-    }
-};
-
 //FUNCTIONS ------------------------
 function initPlayer() {
 
@@ -719,7 +644,6 @@ function initPlayer() {
     video.load();
 
     loadVolume();
-    loadPlaybackSpeed();
 
     video.play().catch(err => {
         console.log("Autoplay blocked", err);
@@ -764,24 +688,6 @@ function jumpToTime() {
     saveProgress();
 
     jumpPopup.classList.remove("show");
-}
-
-function setPlaybackSpeed() {
-
-    const rate = Number(speedInput.value);
-
-    if (isNaN(rate))
-        return;
-
-    playbackSpeed = Math.min(5, Math.max(0.1, rate));
-
-    video.playbackRate = playbackSpeed;
-
-    speed.textContent = `${playbackSpeed}×`;
-
-    localStorage.setItem("player-speed", playbackSpeed);
-
-    speedPopup.classList.remove("show");
 }
 
 function showUI(){
@@ -863,21 +769,6 @@ function toggleCaptions() {
 
 function saveProgress() {
     localStorage.setItem(progressKey, video.currentTime);
-}
-
-function loadPlaybackSpeed() {
-
-    const savedSpeed = Number(localStorage.getItem("player-speed"));
-
-    if (isNaN(savedSpeed))
-        return;
-
-    playbackSpeed = savedSpeed;
-
-    video.playbackRate = playbackSpeed;
-
-    speed.textContent = `${playbackSpeed}×`;
-
 }
 
 function loadVolume() {
