@@ -115,6 +115,11 @@ body{
 
 .meta{
 
+    display:flex;
+    flex-direction:column;
+
+    gap:8px;
+
     color:#9f9f9f;
 
     margin-bottom:24px;
@@ -236,7 +241,15 @@ body{
 
             <div id="title" class="title"></div>
 
-            <div id="meta" class="meta"></div>
+            <div class="meta">
+
+                <div id="typeGenre"></div>
+
+                <div id="runtime"></div>
+
+                <div id="date"></div>
+
+            </div>
 
             <div id="description" class="description"></div>
 
@@ -304,6 +317,15 @@ body{
 
     document.getElementById("description").textContent =
         videop.description;
+
+    document.getElementById("typeGenre").textContent =
+        `${typeText} • ${videop.genre} • ${videop.subgenre}`;
+
+    document.getElementById("runtime").textContent =
+        `🕒 ${formatTime(videop.duration)}`;
+
+    document.getElementById("date").textContent =
+        `📅 ${videop.date}`;
 
     const thumbnail = document.getElementById("thumbnail");
 
