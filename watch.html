@@ -1002,17 +1002,27 @@ function loadPlaybackSpeed() {
 
     const saved = Number(localStorage.getItem("player-speed"));
 
-    if (isNaN(saved))
+    if (!speeds.includes(saved)) {
+
+        playbackSpeed = 1;
+
+        video.playbackRate = 1;
+
+        speedSlider.value = speeds.indexOf(1);
+
+        speedDisplay.textContent = "1×";
+
         return;
+
+    }
 
     playbackSpeed = saved;
 
-    video.playbackRate = playbackSpeed;
+    video.playbackRate = saved;
 
-    speedSlider.value = speeds.indexOf(playbackSpeed);
+    speedSlider.value = speeds.indexOf(saved);
 
-    speedDisplay.textContent =
-        `${playbackSpeed.toFixed(1)}×`;
+    speedDisplay.textContent = `${saved}×`;
 
 }
 
@@ -1075,6 +1085,9 @@ function parseTime(text){
 
 function updateSlider(slider) {
 
+    if (navigator.userAgent.includes("Firefox"))
+        return;
+    
     const percent =
         ((slider.value - slider.min) /
         (slider.max - slider.min)) * 100;
