@@ -571,7 +571,7 @@ document.addEventListener("keydown", (e) => {
 document.addEventListener("click",()=>{
 
     jumpPopup.classList.remove("show");
-
+    speedPopup.classList.remove("show");
 });
 
 video.onloadedmetadata = loadProgress;
@@ -630,7 +630,6 @@ video.onpause=()=>play.textContent="▶️";
 play.onclick = togglePlay;
 back.onclick = () => {window.location.href = "index.html";};
 fullscreen.onclick=()=>toggleFullscreen();
-speed.onclick = togglePlaybackSpeed;
 
 progress.oninput = () => {
     video.currentTime = progress.value;
