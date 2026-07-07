@@ -116,14 +116,19 @@ video{
 
 #speedPopup{
 
-    right:50%;
-    transform:translate(50%, 10px);
+    position:absolute;
+
+    bottom:55px;
+
+    left:50%;
+
+    transform:translateX(-50%) translateY(10px);
 
 }
 
 #speedPopup.show{
 
-    transform:translate(50%, 0);
+    transform:translateX(-50%) translateY(0);
 
 }
 
@@ -230,6 +235,12 @@ button:hover{
 }
 
 .jump-container{
+
+    position:relative;
+
+}
+
+.speed-container{
 
     position:relative;
 
