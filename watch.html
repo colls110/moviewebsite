@@ -832,10 +832,10 @@ jumpTime.onclick = (e) => {
     }
 };
 
-const audioCtx = new AudioContext();
-const source = audioCtx.createMediaElementSource(video);
-const gainNode = audioCtx.createGain();
-
+let audioCtx;
+let source;
+let gainNode;
+let audioInitialized = false;
 
 //FUNCTIONS ------------------------
 function initPlayer() {
@@ -858,9 +858,6 @@ function initPlayer() {
         video.play().catch(() => {});
     }, { once: true });
 
-    source.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-
     loadVolume();
     loadPlaybackSpeed();
     
@@ -871,6 +868,19 @@ function initPlayer() {
     video.play().catch(err => {
         console.log("Autoplay blocked", err);
     });
+    initAudio();
+}
+
+function initAudio(){
+
+    if(audioCtx) return;
+
+    audioCtx = new AudioContext();
+    source = audioCtx.createMediaElementSource(video);
+    gainNode = audioCtx.createGain();
+
+    source.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
 }
 
 function togglePlay() {
