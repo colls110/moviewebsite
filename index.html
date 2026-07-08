@@ -176,12 +176,6 @@ body{
 
 }
 
-.card:hover .thumb{
-
-    transform:scale(1.03);
-
-}
-
 .thumb img{
     width:100%;
     height:100%;
@@ -249,6 +243,66 @@ body{
 
 }
 
+.slider-wrap{
+    position:relative;
+    margin-bottom:40px;
+}
+
+.continue-row{
+    display:flex;
+    gap:20px;
+    overflow-x:auto;
+    overflow-y:visible;
+
+    padding:10px 4px 18px;
+
+    scroll-behavior:smooth;
+    scrollbar-width:none;
+}
+
+.continue-row::-webkit-scrollbar{
+    display:none;
+}
+
+.continue-row .card{
+    width:260px;
+    flex:0 0 auto;
+}
+
+.slider-btn{
+    position:absolute;
+    top:45%;
+    transform:translateY(-50%);
+    z-index:5;
+
+    width:42px;
+    height:80px;
+
+    border:none;
+    border-radius:8px;
+
+    background:rgba(0,0,0,.65);
+    color:white;
+
+    font-size:42px;
+    cursor:pointer;
+
+    opacity:0;
+    transition:.2s;
+}
+
+.slider-wrap:hover .slider-btn{
+    opacity:1;
+}
+
+.slider-btn.left{
+    left:0;
+}
+
+.slider-btn.right{
+    right:0;
+}
+
 </style>
 </head>
 
@@ -290,7 +344,13 @@ body{
 
     <h2 class="section-title">Continue Watching</h2>
 
-    <div class="continue-row" id="continueRow"></div>
+    <div class="slider-wrap">
+        <button class="slider-btn left" onclick="scrollContinue(-1)">‹</button>
+
+        <div class="continue-row" id="continueRow"></div>
+
+        <button class="slider-btn right" onclick="scrollContinue(1)">›</button>
+    </div>
 
     <h2 class="section-title">All Content</h2>
 
@@ -367,6 +427,15 @@ function loadContinueWatching(videos){
 
     });
 
+}
+
+function scrollContinue(direction){
+    const row = document.getElementById("continueRow");
+
+    row.scrollBy({
+        left: direction * 560,
+        behavior: "smooth"
+    });
 }
 
 const JSON_URL = "videos.json";
