@@ -832,6 +832,11 @@ jumpTime.onclick = (e) => {
     }
 };
 
+const audioCtx = new AudioContext();
+const source = audioCtx.createMediaElementSource(video);
+const gainNode = audioCtx.createGain();
+
+
 //FUNCTIONS ------------------------
 function initPlayer() {
 
@@ -852,6 +857,9 @@ function initPlayer() {
     video.addEventListener("canplay", () => {
         video.play().catch(() => {});
     }, { once: true });
+
+    source.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
 
     loadVolume();
     loadPlaybackSpeed();
@@ -940,7 +948,7 @@ function setVolume(value) {
 
     value = Math.max(0, Math.min(1, value));
 
-    video.volume = value;
+    gainNode.gain.value = value;
     video.muted = value === 0;
 
     volume.value = value;
