@@ -515,7 +515,7 @@ input[type="range"]:active::-moz-range-thumb{
 
 <button id="back" class="back-btn">⬅️</button>
 
-<video id="video" preload="metadata"></video>
+<video id="video" preload="auto"></video>
 
 </video>
 
@@ -852,7 +852,7 @@ function initPlayer() {
     document.getElementById("videoTitle").textContent = videop.title;
     document.title = videop.title;
 
-    //video.crossOrigin = "anonymous";
+    video.crossOrigin = "anonymous";
     video.src = videop.video;
     video.load();
 
@@ -860,7 +860,7 @@ function initPlayer() {
         video.play().catch(() => {});
     }, { once: true });
 
-    //initAudio();
+    initAudio();
     loadVolume();
     loadPlaybackSpeed();
     
@@ -968,7 +968,7 @@ function setVolume(value) {
 
     value = Math.max(0, Math.min(1, value));
 
-    video.volume = value;
+    gainNode.gain.value = value * 2;
     video.muted = value === 0;
 
     volume.value = value;
