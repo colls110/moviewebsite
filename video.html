@@ -276,7 +276,8 @@ body{
 
     const savedProgress =
     Number(localStorage.getItem(`progress-${videop.id}`));
-    
+    const preloadVideo = document.createElement("video");
+
     if (!isNaN(savedProgress) && savedProgress > 10) {
 
     watch.textContent =
@@ -297,6 +298,11 @@ body{
         window.location.href = "index.html";
 
     }
+
+    preloadVideo.preload = "auto";
+    preloadVideo.src = videop.video;
+
+    preloadVideo.load();
 
     document.title = videop.title;
 
