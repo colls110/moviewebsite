@@ -868,8 +868,6 @@ function initPlayer() {
     updateSlider(volume);
     updateSlider(speedSlider);
 
-    audioCtx = new AudioContext();
-
     video.play().catch(err => {
         console.log("Autoplay blocked", err);
     });
@@ -879,6 +877,7 @@ function initAudio(){
 
     if(audioCtx) return;
 
+    audioCtx = new AudioContext();
     source = audioCtx.createMediaElementSource(video);
     compressor = audioCtx.createDynamicsCompressor();
     gainNode = audioCtx.createGain();
