@@ -503,6 +503,19 @@ input[type="range"]:active::-moz-range-thumb{
     transform:scale(1.15);
 }
 
+#captionsOverlay{
+    position:absolute;
+    left:50%;
+    bottom:95px;   /* directly above progress bar */
+    transform:translateX(-50%);
+    color:white;
+    font-size:28px;
+    text-align:center;
+    max-width:80%;
+    text-shadow:0 2px 6px black;
+    pointer-events:none;
+}
+
 </style>
 
 </head>
@@ -515,16 +528,15 @@ input[type="range"]:active::-moz-range-thumb{
 
 <button id="back" class="back-btn">⬅️</button>
 
+<div id="captionsOverlay"></div>
+
 <video id="video" preload="auto">
     <track
         id="captionTrack"
         kind="subtitles"
         srclang="en"
         label="English"
-        src=""
-        default>
-</video>
-
+        src="">
 </video>
 
 <div id="centerIcon" class="center-icon">▶️</div>
@@ -751,6 +763,9 @@ document.addEventListener("click",()=>{
 video.onloadedmetadata = () => {
     loadProgress();
     updateSlider(progress);
+    captionsEnabled = localStorage.getItem("captions") === "true";
+    video.textTracks[0].mode = captionsEnabled ? "showing" : "hidden";
+    captions.classList.toggle("active", captionsEnabled);
 };
 
 video.addEventListener("pause",()=>{
