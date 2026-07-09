@@ -788,16 +788,7 @@ document.addEventListener("click",()=>{
 video.onloadedmetadata = () => {
     loadProgress();
     updateSlider(progress);
-    const track = video.textTracks[0];
-
-    if (track) {
-        track.mode = "hidden"; // Keep browser captions hidden
-    }
-
-    captionsOverlay.style.display =
-        captionsEnabled ? "block" : "none";
-
-    captions.classList.toggle("active", captionsEnabled);
+    initcaptions();
 };
 
 video.addEventListener("pause",()=>{
@@ -931,7 +922,7 @@ function initPlayer() {
         video.play().catch(() => {});
     }, { once: true });
 
-    let captionsEnabled = localStorage.getItem("captions") === "true";
+    captionsEnabled = localStorage.getItem("captions") === "true";
 
     initAudio();
     loadVolume();
@@ -1163,6 +1154,33 @@ function loadProgress() {
 
     progress.value = video.currentTime;
     updateSlider(progress);
+}
+
+function initcaptions() {
+
+    const textTrack = video.textTracks[0];
+
+    if (textTrack) {
+        textTrack.mode = "hidden";
+
+        textTrack.addEventListener("cuechange", () => {
+
+            if (!captionsEnabled) {
+                captionsOverlay.textContent = "";
+                return;
+            }
+
+            const cue = textTrack.activeCues[0];
+            captionsOverlay.textContent = cue ? cue.text : "";
+        });
+    }
+
+    captionsEnabled = localStorage.getItem("captions") === "true";
+
+    captionsOverlay.style.display =
+        captionsEnabled ? "block" : "none";
+
+    captions.classList.toggle("active", captionsEnabled);
 }
 
 function format(seconds){
