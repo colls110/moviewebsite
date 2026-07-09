@@ -788,14 +788,14 @@ document.addEventListener("click",()=>{
 video.onloadedmetadata = () => {
     loadProgress();
     updateSlider(progress);
-    captionsEnabled = localStorage.getItem("captions") === "true";
-    video.textTracks[0].mode = captionsEnabled ? "showing" : "hidden";
-    captions.classList.toggle("active", captionsEnabled);
     const track = video.textTracks[0];
 
     if (track) {
-        track.mode = "hidden";
+        track.mode = "hidden"; // Keep browser captions hidden
     }
+
+    captionsOverlay.style.display =
+        captionsEnabled ? "block" : "none";
 
     captions.classList.toggle("active", captionsEnabled);
 };
@@ -1095,16 +1095,12 @@ function toggleCaptions() {
 
     captionsEnabled = !captionsEnabled;
 
-    const track = video.textTracks[0];
-
-    if (track) {
-        track.mode = "hidden";
-
-        captionsOverlay.style.display =
-        captionsEnabled ? "block" : "none";
-    }
+    localStorage.setItem("captions", captionsEnabled);
 
     captions.classList.toggle("active", captionsEnabled);
+
+    captionsOverlay.style.display =
+        captionsEnabled ? "block" : "none";
 }
 
 function saveProgress() {
