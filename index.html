@@ -322,56 +322,6 @@ body{
 
 .continue-row{
     display:flex;
-    gap:20px;
-    overflow-x:auto;
-
-    padding-top:8px;
-    padding-bottom:12px;
-
-    margin-bottom:40px;
-}
-
-.continue-row::-webkit-scrollbar{
-
-    display:none;
-
-}
-
-.continue-row .card{
-
-    flex:0 0 280px;
-
-}
-
-.progress-bar{
-
-    position:absolute;
-
-    left:0;
-    right:0;
-    bottom:0;
-
-    height:4px;
-
-    background:#444;
-
-}
-
-.progress-fill{
-
-    height:100%;
-
-    background:#4da3ff;
-
-}
-
-.slider-wrap{
-    position:relative;
-    margin-bottom:40px;
-}
-
-.continue-row{
-    display:flex;
     gap:24px;
     overflow-x:auto;
     overflow-y:visible;
@@ -389,6 +339,11 @@ body{
 .continue-row .card{
     width:300px;
     flex:0 0 auto;
+}
+
+.slider-wrap{
+    position:relative;
+    margin-bottom:40px;
 }
 
 .slider-btn{
@@ -456,7 +411,6 @@ body{
 .clear-btn:hover{
 
     color:white;
-
     transform:scale(1.05);
 
 }
@@ -464,6 +418,96 @@ body{
 .content-section .section-title{
     margin-bottom:18px;
 }
+
+/* Featured Bar Styles */
+.featured-bar {
+    position: relative;
+    margin-bottom: 50px;
+}
+
+.featured-container {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    padding: 10px 0;
+}
+
+.featured-container::-webkit-scrollbar {
+    display: none;
+}
+
+.featured-card {
+    flex: 0 0 380px;
+    cursor: pointer;
+    transition: .3s;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.featured-card:hover {
+    transform: scale(1.03);
+}
+
+.featured-card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+
+.featured-card h3 {
+    padding: 14px 16px 10px;
+    font-size: 19px;
+    background: rgba(17, 24, 39, 0.95);
+}
+
+.dots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    background: rgba(255,255,255,0.4);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.dot.active {
+    background: #8db9ff;
+    transform: scale(1.2);
+}
+
+/* Hero slider remains for now */
+.hero-slider {
+    position: relative;
+    margin-bottom: 45px;
+}
+
+.hero-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    border: none;
+    width: 50px;
+    height: 80px;
+    font-size: 40px;
+    cursor: pointer;
+    border-radius: 8px;
+    opacity: 0.8;
+}
+
+.hero-arrow.left { left: 20px; }
+.hero-arrow.right { right: 20px; }
 
 </style>
 </head>
@@ -502,23 +546,14 @@ body{
 
 <div class="container">
 
-    <div class="hero-slider">
-
-        <button class="hero-arrow left">‹</button>
-
-        <div class="hero" id="hero">
-            <div class="hero-content">
-                <h1 id="heroTitle"></h1>
-                <p id="heroDescription"></p>
-
-                <a id="heroWatch" class="watch-btn">
-                    ▶ Watch Now
-                </a>
-            </div>
-        </div>
-
-        <button class="hero-arrow right">›</button>
-
+    <!-- Featured Bar -->
+    <div class="section-header">
+        <h2 class="section-title">Featured</h2>
+    </div>
+    
+    <div class="featured-bar">
+        <div class="featured-container" id="featuredContainer"></div>
+        <div class="dots" id="dotsContainer"></div>
     </div>
 
     <div class="section-header">
@@ -541,111 +576,166 @@ body{
         <button class="slider-btn right" onclick="scrollContinue(1)">›</button>
     </div>
 
+    <!-- Recently Added -->
+    <div class="section-header">
+        <h2 class="section-title">Recently Added</h2>
+    </div>
+
+    <div class="slider-wrap">
+        <button class="slider-btn left" onclick="scrollRecently(-1)">‹</button>
+        <div class="continue-row" id="recentlyRow"></div>
+        <button class="slider-btn right" onclick="scrollRecently(1)">›</button>
+    </div>
+
     <div class="content-section">
 
         <h2 class="section-title">All Content</h2>
 
         <div class="grid" id="videoGrid"></div>
     </div>
+
 <script>
 
 function formatTime(seconds){
-        seconds = Math.floor(seconds);
+    seconds = Math.floor(seconds);
 
-        const hours = Math.floor(seconds / 3600);
-        const mins = Math.floor((seconds % 3600) / 60);
-        const secs = seconds % 60;
+    const hours = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
 
-        if (hours > 0) {
-
-            return `${hours}:${mins.toString().padStart(2,"0")}:${secs.toString().padStart(2,"0")}`;
-
-        }
-
-        return `${mins}:${secs.toString().padStart(2,"0")}`;
+    if (hours > 0) {
+        return `${hours}:${mins.toString().padStart(2,"0")}:${secs.toString().padStart(2,"0")}`;
     }
+    return `${mins}:${secs.toString().padStart(2,"0")}`;
+}
 
 function loadContinueWatching(videos){
-
-    const row =
-        document.getElementById("continueRow");
-
+    const row = document.getElementById("continueRow");
     row.innerHTML = "";
 
     videos.forEach(video => {
+        const progress = Number(localStorage.getItem(`progress-${video.id}`));
 
-        const progress = Number(
-            localStorage.getItem(`progress-${video.id}`)
-        );
-
-        if(
-            isNaN(progress) ||
-            progress <= 60 ||
-            progress >= video.duration - 600
-        ){
+        if(isNaN(progress) || progress <= 60 || progress >= video.duration - 600){
             return;
         }
 
         const card = document.createElement("a");
-
         card.className = "card";
-
         card.href = `watch.html?id=${video.id}`;
 
-        const percent =
-            (progress / video.duration) * 100;
+        const percent = (progress / video.duration) * 100;
 
         card.innerHTML = `
             <div class="thumb">
-
                 <img src="${video.thumbnail}">
-
                 <div class="progress-bar">
-
-                    <div
-                        class="progress-fill"
-                        style="width:${percent}%">
-                    </div>
-
+                    <div class="progress-fill" style="width:${percent}%"></div>
                 </div>
-
             </div>
-
             <h3>${video.title}</h3>
         `;
 
         row.appendChild(card);
-
     });
-
 }
 
 function clearContinueWatching(){
-
     if(!confirm("Clear your Continue Watching list?")){
         return;
     }
 
-    const videos =
-        JSON.parse(sessionStorage.getItem("videos")) || [];
-
+    const videos = JSON.parse(sessionStorage.getItem("videos")) || [];
     videos.forEach(video => {
         localStorage.removeItem(`progress-${video.id}`);
     });
 
     loadContinueWatching(videos);
-    
 }
 
-const cardWidth = document.querySelector(".grid .card")?.offsetWidth ?? 300;
+function loadFeatured(videos) {
+    const featuredVideos = videos.filter(v => v.featured === true);
+    const container = document.getElementById("featuredContainer");
+    const dotsContainer = document.getElementById("dotsContainer");
+    
+    container.innerHTML = "";
+    dotsContainer.innerHTML = "";
 
-document.querySelectorAll(".continue-row .card").forEach(card => {
-    card.style.width = `${cardWidth}px`;
-});
+    featuredVideos.forEach((video, index) => {
+        const card = document.createElement("a");
+        card.className = "featured-card";
+        card.href = `watch.html?id=${video.id}`;
+
+        const thumbSrc = video.featured_thumbnail || video.thumbnail;
+
+        card.innerHTML = `
+            <img src="${thumbSrc}" alt="${video.title}">
+            <h3>${video.title}</h3>
+        `;
+        container.appendChild(card);
+
+        // Dot
+        const dot = document.createElement("div");
+        dot.className = "dot";
+        if (index === 0) dot.classList.add("active");
+        dot.onclick = () => {
+            scrollToFeatured(index);
+        };
+        dotsContainer.appendChild(dot);
+    });
+}
+
+function scrollToFeatured(index) {
+    const container = document.getElementById("featuredContainer");
+    const cards = container.querySelectorAll(".featured-card");
+    if (cards[index]) {
+        cards[index].scrollIntoView({
+            behavior: "smooth",
+            inline: "center"
+        });
+    }
+    
+    // Update active dot
+    const dots = document.querySelectorAll(".dot");
+    dots.forEach((dot, i) => {
+        dot.classList.toggle("active", i === index);
+    });
+}
+
+function loadRecentlyAdded(videos) {
+    const row = document.getElementById("recentlyRow");
+    row.innerHTML = "";
+
+    // For now, just show all or reverse for "recent" feel
+    const recentVideos = [...videos].reverse(); // simple mock
+
+    recentVideos.forEach(video => {
+        const card = document.createElement("a");
+        card.className = "card";
+        card.href = `watch.html?id=${video.id}`;
+
+        card.innerHTML = `
+            <div class="thumb">
+                <img src="${video.thumbnail}">
+                <div class="duration">${formatTime(video.duration)}</div>
+            </div>
+            <h3>${video.title}</h3>
+        `;
+
+        row.appendChild(card);
+    });
+}
 
 function scrollContinue(direction){
     const row = document.getElementById("continueRow");
+    row.scrollBy({
+        left: direction * 700,
+        behavior: "smooth"
+    });
+}
 
+function scrollRecently(direction){
+    const row = document.getElementById("recentlyRow");
     row.scrollBy({
         left: direction * 700,
         behavior: "smooth"
@@ -655,133 +745,50 @@ function scrollContinue(direction){
 const JSON_URL = "videos.json";
 
 async function loadVideos() {
-
     const grid = document.getElementById("videoGrid");
 
     try {
-
         let videos;
 
-        // Use cached videos if available
         const cached = sessionStorage.getItem("videos");
-
         if (cached) {
-
             videos = JSON.parse(cached);
-
             console.log("Loaded videos from cache.");
-
         } else {
-
             const response = await fetch(JSON_URL);
             videos = await response.json();
-
-            // Save for the rest of the session
-            sessionStorage.setItem(
-                "videos",
-                JSON.stringify(videos)
-            );
-
+            sessionStorage.setItem("videos", JSON.stringify(videos));
             console.log("Downloaded videos from API.");
-
         }
 
+        // Load sections
+        loadFeatured(videos);
+        loadContinueWatching(videos);
+        loadRecentlyAdded(videos);
+
+        // All Content Grid
         grid.innerHTML = "";
-
         videos.forEach(video => {
-
             const card = document.createElement("a");
-
             card.className = "card";
-
-            card.href = `video.html?id=${video.id}`;
+            card.href = `watch.html?id=${video.id}`;
 
             card.innerHTML = `
-
                 <div class="thumb">
-
-                    ${
-                        video.thumbnail
-                        ? `<img src="${video.thumbnail}" alt="${video.title}">`
-                        : ""
-                    }
-
-                    <div class="duration">
-                        ${formatTime(video.duration)}
-                    </div>
-
+                    ${video.thumbnail ? `<img src="${video.thumbnail}" alt="${video.title}">` : ""}
+                    <div class="duration">${formatTime(video.duration)}</div>
                 </div>
-
                 <h3>${video.title}</h3>
-
             `;
-
             grid.appendChild(card);
         });
-        loadContinueWatching(videos);
-    }
-
-    catch (err) {
-
+    } catch (err) {
         console.error(err);
-
         grid.innerHTML = "<p>Failed to load videos.</p>";
-
     }
 }
 
 loadVideos();
-
-const featured =
-    videos.filter(v => v.featured);
-
-const left =
-    document.querySelector(".hero-arrow.left");
-
-const right =
-    document.querySelector(".hero-arrow.right");
-    
-let heroIndex = 0;
-
-function loadHero(){
-
-    const movie = featured[heroIndex];
-
-    hero.style.backgroundImage =
-        `url(${movie.thumbnail})`;
-
-    heroTitle.textContent =
-        movie.title;
-
-    heroDescription.textContent =
-        movie.description;
-
-    heroWatch.href =
-        `watch.html?id=${movie.id}`;
-
-}
-
-left.onclick = () => {
-
-    heroIndex--;
-
-    if(heroIndex < 0)
-        heroIndex = featured.length-1;
-
-    loadHero();
-
-};
-
-right.onclick = () => {
-
-    heroIndex++;
-
-    if(heroIndex >= featured.length)
-        heroIndex = 0;
-
-    loadHero();
-
-};
 
 </script>
 
