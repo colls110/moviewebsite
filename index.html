@@ -389,8 +389,8 @@ function loadContinueWatching(videos){
 
         if(
             isNaN(progress) ||
-            progress <= 10 ||
-            progress >= video.duration - 10
+            progress <= 60 ||
+            progress >= video.duration - 600
         ){
             return;
         }
