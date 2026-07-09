@@ -410,6 +410,13 @@ body{
 
     });
 
+    document.querySelector(".search").addEventListener("keydown", e => {
+        if (e.key === "Enter") {
+            window.location.href =
+                `search.html?q=${encodeURIComponent(e.target.value)}`;
+        }
+    });
+
 </script>
 </body>
 </html>
