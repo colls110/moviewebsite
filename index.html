@@ -548,50 +548,6 @@ body{
         <div class="grid" id="videoGrid"></div>
     </div>
 <script>
-const featured =
-    videos.filter(v => v.featured);
-
-let heroIndex = 0;
-
-function loadHero(){
-
-    const movie = featured[heroIndex];
-
-    hero.style.backgroundImage =
-        `url(${movie.thumbnail})`;
-
-    heroTitle.textContent =
-        movie.title;
-
-    heroDescription.textContent =
-        movie.description;
-
-    heroWatch.href =
-        `watch.html?id=${movie.id}`;
-
-}
-
-left.onclick = () => {
-
-    heroIndex--;
-
-    if(heroIndex < 0)
-        heroIndex = featured.length-1;
-
-    loadHero();
-
-};
-
-right.onclick = () => {
-
-    heroIndex++;
-
-    if(heroIndex >= featured.length)
-        heroIndex = 0;
-
-    loadHero();
-
-};
 
 function formatTime(seconds){
         seconds = Math.floor(seconds);
@@ -775,6 +731,58 @@ async function loadVideos() {
 }
 
 loadVideos();
+
+const featured =
+    videos.filter(v => v.featured);
+
+const left =
+    document.querySelector(".hero-arrow.left");
+
+const right =
+    document.querySelector(".hero-arrow.right");
+    
+let heroIndex = 0;
+
+function loadHero(){
+
+    const movie = featured[heroIndex];
+
+    hero.style.backgroundImage =
+        `url(${movie.thumbnail})`;
+
+    heroTitle.textContent =
+        movie.title;
+
+    heroDescription.textContent =
+        movie.description;
+
+    heroWatch.href =
+        `watch.html?id=${movie.id}`;
+
+}
+
+left.onclick = () => {
+
+    heroIndex--;
+
+    if(heroIndex < 0)
+        heroIndex = featured.length-1;
+
+    loadHero();
+
+};
+
+right.onclick = () => {
+
+    heroIndex++;
+
+    if(heroIndex >= featured.length)
+        heroIndex = 0;
+
+    loadHero();
+
+};
+
 </script>
 
 </div>
