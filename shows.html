@@ -212,18 +212,27 @@ body{
 }
 
 .card{
-
-    text-decoration:none;
-
-    color:white;
-
+    cursor:pointer;
     transition:.2s;
-
+    border-radius: 16px;
 }
 
 .card:hover{
+    transform:scale(1.04);
+}
 
-    transform:scale(1.03);
+.card:hover .thumb {
+    box-shadow: 
+        0 0 0 3px rgba(255, 255, 255, 0.9),
+        0 10px 30px rgba(255, 255, 255, 0.15);
+    outline: 1px solid rgba(255,255,255,0.25);
+}
+
+.card,
+.card:visited{
+
+    color:white;
+    text-decoration:none;
 
 }
 
