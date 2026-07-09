@@ -15,7 +15,7 @@ document.addEventListener("click", (e) => {
 
     e.preventDefault();
 
-    history.pushState({}, "", link.href);
+    history.pushState({}, "", link.getAttribute("href"));
 
     router();
 
