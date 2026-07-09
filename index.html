@@ -294,6 +294,38 @@ body{
     overflow:hidden;
 }
 
+.thumb::before{
+    content:"▶";
+
+    position:absolute;
+    top:10px;
+    left:10px;
+
+    width:34px;
+    height:34px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:white;
+    color:black;
+
+    border-radius:8px;
+
+    font-size:16px;
+    font-weight:bold;
+
+    opacity:0;
+    transform:translateY(-6px);
+    transition:.2s;
+}
+
+.card:hover .thumb::before{
+    opacity:1;
+    transform:translateY(0);
+}
+
 .thumb img{
     width:100%;
     height:100%;
