@@ -414,114 +414,6 @@ body{
     margin-bottom:18px;
 }
 
-.featured-bar{
-    position:relative;
-    margin-bottom:50px;
-}
-
-.featured-container{
-    overflow:hidden;
-    border-radius:22px;
-}
-
-.featured-track{
-    display:flex;
-    transition:.35s ease;
-}
-
-.featured-card{
-    min-width:100%;
-    aspect-ratio:16/9;
-    height:auto;
-    position:relative;
-    color:white;
-    text-decoration:none;
-    background-size:cover;
-    background-position:center;
-}
-
-.featured-card::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:linear-gradient(to top, rgba(0,0,0,.9), rgba(0,0,0,.2));
-}
-
-.featured-info{
-    position:absolute;
-    left:40px;
-    bottom:40px;
-    z-index:2;
-}
-
-.featured-info h3{
-    font-size:38px;
-    margin-bottom:14px;
-}
-
-.featured-arrow{
-    position:absolute;
-    top:50%;
-    transform:translateY(-50%);
-    z-index:5;
-    width:45px;
-    height:70px;
-    border:none;
-    border-radius:10px;
-    background:rgba(0,0,0,.55);
-    color:white;
-    font-size:38px;
-    cursor:pointer;
-}
-
-.featured-arrow.left{ left:16px; }
-.featured-arrow.right{ right:16px; }
-
-.dots{
-    display:flex;
-    justify-content:center;
-    gap:10px;
-    margin-top:14px;
-}
-
-.dot{
-    width:10px;
-    height:10px;
-    border-radius:50%;
-    background:rgba(255,255,255,.35);
-    cursor:pointer;
-}
-
-.dot.active{
-    background:#8db9ff;
-    transform:scale(1.25);
-}
-
-/* Hero slider remains for now */
-.hero-slider {
-    position: relative;
-    margin-bottom: 45px;
-}
-
-.hero-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
-    background: rgba(0,0,0,0.6);
-    color: white;
-    border: none;
-    width: 50px;
-    height: 80px;
-    font-size: 40px;
-    cursor: pointer;
-    border-radius: 8px;
-    opacity: 0.8;
-}
-
-.hero-arrow.left { left: 20px; }
-.hero-arrow.right { right: 20px; }
-
 .progress-bar{
     position:absolute;
     left:0;
@@ -574,19 +466,6 @@ body{
 </div>
 
 <div class="container">
-
-    <!-- Featured Bar -->
-    <div class="featured-bar">
-        <button class="featured-arrow left" onclick="changeFeatured(-1)">‹</button>
-
-        <div class="featured-container">
-            <div class="featured-track" id="featuredTrack"></div>
-        </div>
-
-        <button class="featured-arrow right" onclick="changeFeatured(1)">›</button>
-
-        <div class="dots" id="dotsContainer"></div>
-    </div>
 
     <div class="section-header">
 
@@ -672,78 +551,6 @@ function clearContinueWatching(){
     });
 
     loadContinueWatching(videos);
-}
-
-let featuredIndex = 0;
-let featuredCount = 0;
-
-function loadFeatured(videos){
-    const featuredVideos = videos.filter(v => v.featured === true).slice(0, 4);
-    const track = document.getElementById("featuredTrack");
-    const dotsContainer = document.getElementById("dotsContainer");
-
-    track.innerHTML = "";
-    dotsContainer.innerHTML = "";
-
-    featuredCount = featuredVideos.length;
-    featuredIndex = 0;
-
-    featuredVideos.forEach((video, index) => {
-        const card = document.createElement("a");
-        card.className = "featured-card";
-        card.href = `watch.html?id=${video.id}`;
-
-        const thumbSrc = video.featured_thumbnail || video.thumbnail;
-        card.style.backgroundImage = `url("${thumbSrc}")`;
-
-        card.innerHTML = `
-            <div class="featured-info">
-                <h3>${video.title}</h3>
-                <span class="watch-btn">▶ Watch Now</span>
-            </div>
-        `;
-
-        track.appendChild(card);
-
-        const dot = document.createElement("div");
-        dot.className = "dot";
-        if(index === 0) dot.classList.add("active");
-        dot.onclick = () => goToFeatured(index);
-
-        dotsContainer.appendChild(dot);
-    });
-
-    updateFeatured();
-}
-
-function goToFeatured(index){
-    featuredIndex = index;
-    updateFeatured();
-}
-
-function changeFeatured(direction){
-    featuredIndex += direction;
-
-    if(featuredIndex < 0){
-        featuredIndex = featuredCount - 1;
-    }
-
-    if(featuredIndex >= featuredCount){
-        featuredIndex = 0;
-    }
-
-    updateFeatured();
-}
-
-function updateFeatured(){
-    const track = document.getElementById("featuredTrack");
-    const dots = document.querySelectorAll(".dot");
-
-    track.style.transform = `translateX(-${featuredIndex * 100}%)`;
-
-    dots.forEach((dot, index) => {
-        dot.classList.toggle("active", index === featuredIndex);
-    });
 }
 
 function loadRecentlyAdded(videos) {
@@ -865,7 +672,6 @@ async function loadVideos() {
             console.log("Downloaded videos from API.");
         }
 
-        loadFeatured(videos);
         loadContinueWatching(videos);
         loadRecentlyAdded(videos);
 
