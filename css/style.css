@@ -187,19 +187,25 @@ body{
 }
 
 .card{
-
     cursor:pointer;
+    transition:.2s;
+    border-radius:16px;
 
     color:white;
     text-decoration:none;
-
-    transition:.2s;
-
 }
 
 .card:hover{
+    transform:scale(1.04);
+}
 
-    transform:scale(1.03);
+.card:hover .thumb{
+
+    box-shadow:
+        0 0 0 3px rgba(255,255,255,.9),
+        0 10px 30px rgba(255,255,255,.15);
+
+    outline:1px solid rgba(255,255,255,.25);
 
 }
 
@@ -213,6 +219,10 @@ body{
     border-radius:14px;
 
     background:#2d2d2d;
+
+    transition:
+        box-shadow .25s ease,
+        transform .2s ease;
 
 }
 
