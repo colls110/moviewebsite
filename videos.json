@@ -19,7 +19,8 @@
         "thumbnail": "https://media.cpodcasts.com/Thumbnails/Minc.jpg",
         "video": "https://media.cpodcasts.com/Movies/Monsters,_Inc..mp4",
         "captions": "https://media.cpodcasts.com/Captions/Minc.vtt",
-        "duration": 5536
+        "duration": 5536,
+        "featured": false
     },
     {
         "id": "2",
@@ -42,7 +43,9 @@
         "thumbnail": "https://media.cpodcasts.com/Thumbnails/WOWS.jpg",
         "video": "https://media.cpodcasts.com/Movies/The_Wolf_of_Wall_Street.mp4",
         "captions": "https://media.cpodcasts.com/Captions/WOWS.vtt",
-        "duration": 10792
+        "duration": 10792,
+        "featured": true,
+        "featured_thumbnail": "https://media.cpodcasts.com/Thumbnails/WOWS.jpg"
     },
     {
         "id": "3",
