@@ -1,8 +1,13 @@
+import { Header } from "../components/header.js";
+
 export function Home() {
 
     return `
-        <h1>Home</h1>
-        <p>Welcome!</p>
+        ${Header("home")}
+
+        <main class="container">
+            <h1>Welcome!</h1>
+        </main>
     `;
 
 }
