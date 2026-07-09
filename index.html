@@ -195,13 +195,12 @@ body{
 }
 
 .hero{
-
     position:relative;
 
-    height:420px;
+    width:100%;
+    height:480px;
 
-    border-radius:18px;
-
+    border-radius:20px;
     overflow:hidden;
 
     background-size:cover;
@@ -210,13 +209,10 @@ body{
     display:flex;
     align-items:flex-end;
 
-    padding:40px;
-
-    margin-bottom:45px;
+    padding:50px;
 }
 
 .hero::before{
-
     content:"";
 
     position:absolute;
@@ -225,18 +221,17 @@ body{
     background:
         linear-gradient(
             to top,
-            rgba(0,0,0,.85),
-            rgba(0,0,0,.15)
+            rgba(0,0,0,.90) 10%,
+            rgba(0,0,0,.45) 50%,
+            rgba(0,0,0,.05) 100%
         );
-
 }
 
 .hero-content{
-
     position:relative;
     z-index:2;
 
-    max-width:500px;
+    max-width:520px;
 }
 
 .hero h1{
@@ -484,39 +479,12 @@ body{
     transform: scale(1.2);
 }
 
-/* Hero slider remains for now */
-.hero-slider {
-    position: relative;
-    margin-bottom: 45px;
-}
-
-.hero-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
-    background: rgba(0,0,0,0.6);
-    color: white;
-    border: none;
-    width: 50px;
-    height: 80px;
-    font-size: 40px;
-    cursor: pointer;
-    border-radius: 8px;
-    opacity: 0.8;
-}
-
-.hero-arrow.left { left: 20px; }
-.hero-arrow.right { right: 20px; }
-
 .progress-bar{
     position:absolute;
     left:0;
     right:0;
     bottom:0;
-
     height:4px;
-
     background:#444;
 }
 
@@ -711,7 +679,11 @@ function loadRecentlyAdded(videos) {
     const row = document.getElementById("recentlyRow");
     row.innerHTML = "";
 
-    row.appendChild(createCard(video));
+    const recentVideos = [...videos].reverse(); // simple mock
+
+    recentVideos.forEach(video => {
+        row.appendChild(createCard(video));
+    });
 }
 
 function scrollContinue(direction){
@@ -741,14 +713,12 @@ function createCard(video, options = {}) {
     const card = document.createElement("a");
 
     card.className = "card";
-    card.href = `video.html?id=${video.id}`;
+    card.href = `watch.html?id=${video.id}`;
 
     let extra = "";
 
     if (showProgress) {
-
         const percent = (progress / video.duration) * 100;
-
         extra = `
             <div class="progress-bar">
                 <div class="progress-fill"
@@ -756,9 +726,7 @@ function createCard(video, options = {}) {
                 </div>
             </div>
         `;
-
     } else {
-
         extra = `
             <div class="duration">
                 ${formatTime(video.duration)}
@@ -767,24 +735,12 @@ function createCard(video, options = {}) {
     }
 
     card.innerHTML = `
-
         <div class="thumb">
-
-            <img src="${video.thumbnail}"
-                 alt="${video.title}">
-
+            <img src="${video.thumbnail}" alt="${video.title}">
             ${extra}
-
         </div>
-
         <h3>${video.title}</h3>
-
-        ${
-            showGenre
-            ? `<p>${video.genre} • ${video.subgenre}</p>`
-            : ""
-        }
-
+        ${showGenre ? `<p>${video.genre} • ${video.subgenre}</p>` : ""}
     `;
 
     return card;
@@ -815,18 +771,7 @@ async function loadVideos() {
 
         grid.innerHTML = "";
         videos.forEach(video => {
-            const card = document.createElement("a");
-            card.className = "card";
-            card.href = `watch.html?id=${video.id}`;
-
-            card.innerHTML = `
-                <div class="thumb">
-                    ${video.thumbnail ? `<img src="${video.thumbnail}" alt="${video.title}">` : ""}
-                    <div class="duration">${formatTime(video.duration)}</div>
-                </div>
-                <h3>${video.title}</h3>
-            `;
-            grid.appendChild(card);
+            grid.appendChild(createCard(video));
         });
     } catch (err) {
         console.error(err);
