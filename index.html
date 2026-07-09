@@ -509,6 +509,22 @@ body{
 .hero-arrow.left { left: 20px; }
 .hero-arrow.right { right: 20px; }
 
+.progress-bar{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+
+    height:4px;
+
+    background:#444;
+}
+
+.progress-fill{
+    height:100%;
+    background:#4da3ff;
+}
+
 </style>
 </head>
 
@@ -761,12 +777,10 @@ async function loadVideos() {
             console.log("Downloaded videos from API.");
         }
 
-        // Load sections
         loadFeatured(videos);
         loadContinueWatching(videos);
         loadRecentlyAdded(videos);
 
-        // All Content Grid
         grid.innerHTML = "";
         videos.forEach(video => {
             const card = document.createElement("a");
