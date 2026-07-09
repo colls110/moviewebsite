@@ -1,900 +1,154 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>C's Movies</title>
-
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
-}
-
-body{
-    color:white;
-    min-height:100vh;
-
-    background:
-        radial-gradient(circle at 20% 0%,
-            rgba(77,163,255,.20),
-            transparent 55%),
-
-        radial-gradient(circle at 80% 10%,
-            rgba(60,100,220,.14),
-            transparent 60%),
-
-        linear-gradient(
-            to bottom,
-            #151c2c,
-            #111827 35%,
-            #090d16 100%
-        );
-
-    background-attachment:fixed;
-}
-
-.header{
-
-    position:sticky;
-    top:0;
-    z-index:100;
-
-    display:flex;
-    align-items:center;
-    gap:30px;
-
-    padding:18px 40px;
-
-    background:rgba(8,12,18,.92);
-
-    backdrop-filter:blur(18px);
-    -webkit-backdrop-filter:blur(18px);
-
-    border-bottom:1px solid rgba(255,255,255,.06);
-
-    box-shadow:
-    0 8px 24px rgba(0,0,0,.30),
-    0 1px 0 rgba(77,163,255,.08);
-}
-
-.header::after{
-    content:"";
-
-    position:absolute;
-
-    left:0;
-    right:0;
-    bottom:-20px;
-
-    height:20px;
-
-    pointer-events:none;
-
-    background:linear-gradient(
-        to bottom,
-        rgba(0,0,0,.25),
-        transparent
-    );
-}
-
-.logo,
-.logo:visited{
-
-    color:white;
-
-    text-decoration:none;
-
-    font-size:28px;
-    font-weight:bold;
-
-    display:flex;
-    align-items:center;
-    gap:10px;
-
-    transition:.2s;
-
-}
-
-.logo:hover{
-
-    color:#8db9ff;
-
-    transform:scale(1.03);
-
-}
-
-.card,
-.card:visited{
-
-    color:white;
-    text-decoration:none;
-
-}
-
-.nav{
-    display:flex;
-    gap:30px;
-}
-
-.nav a{
-
-    display:flex;
-    align-items:center;
-    gap:8px;
-
-    color:white;
-
-    text-decoration:none;
-
-    font-size:19px;
-    font-weight:bold;
-
-    transition:.2s;
-
-}
-
-.nav a:hover{
-
-    color:white;
-    transform:scale(1.05);
-
-}
-
-.nav a.active{
-
-    color:#8db9ff;
-
-}
-    
-.search-box{
-
-    display:flex;
-    align-items:center;
-    gap:12px;
-
-    width:420px;
-
-    padding:8px 18px;
-
-    border-radius:999px;
-
-    background:#151d2c;
-
-    border:1px solid rgba(255,255,255,.06);
-}
-
-.search-box span{
-
-    font-size:20px;
-    opacity:.7;
-}
-
-.search{
-
-    flex:1;
-
-    background:none;
-    border:none;
-    outline:none;
-
-    color:white;
-    font-size:16px;
-}
-
-.search::placeholder{
-
-    color:#7f8aa1;
-}
-
-.container{
-    padding:20px 40px;
-}
-
-.hero{
-    position:relative;
-
-    width:100%;
-    height:480px;
-
-    border-radius:20px;
-    overflow:hidden;
-
-    background-size:cover;
-    background-position:center;
-
-    display:flex;
-    align-items:flex-end;
-
-    padding:50px;
-}
-
-.hero::before{
-    content:"";
-
-    position:absolute;
-    inset:0;
-
-    background:
-        linear-gradient(
-            to top,
-            rgba(0,0,0,.90) 10%,
-            rgba(0,0,0,.45) 50%,
-            rgba(0,0,0,.05) 100%
-        );
-}
-
-.hero-content{
-    position:relative;
-    z-index:2;
-
-    max-width:520px;
-}
-
-.hero h1{
-    font-size:36px;
-    margin-bottom:10px;
-}
-
-.hero p{
-    color:#bbb;
-    margin-bottom:20px;
-}
-
-.watch-btn{
-    display:inline-block;
-    background:white;
-    color:black;
-    padding:12px 20px;
-    border-radius:8px;
-    text-decoration:none;
-    font-weight:bold;
-}
-
-.section-title{
-    margin-bottom:16px;
-    font-size:22px;
-}
-
-.section-header .section-title{
-    margin-top: 16px;
-}
-
-.grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-    gap:24px;
-}
-
-.card{
-    cursor:pointer;
-    transition:.2s;
-}
-
-.card:hover{
-    transform:scale(1.04);
-}
-
-.thumb{
-    width:100%;
-    aspect-ratio:16/9;
-
-    border-radius:14px;
-
-    background:linear-gradient(
-        135deg,
-        #2a2a2a,
-        #3d3d3d
-    );
-
-    position:relative;
-    overflow:hidden;
-}
-
-.thumb img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
-
-.duration{
-    position:absolute;
-    right:8px;
-    bottom:8px;
-    background:rgba(0,0,0,.8);
-    padding:4px 7px;
-    border-radius:5px;
-    font-size:13px;
-}
-
-.card h3{
-    margin-top:12px;
-    font-size:18px;
-}
-
-.continue-row{
-    display:flex;
-    gap:24px;
-    overflow-x:auto;
-    overflow-y:visible;
-
-    padding:10px 4px 18px;
-
-    scroll-behavior:smooth;
-    scrollbar-width:none;
-}
-
-.continue-row::-webkit-scrollbar{
-    display:none;
-}
-
-.continue-row .card{
-    width:300px;
-    flex:0 0 auto;
-}
-
-.slider-wrap{
-    position:relative;
-    margin-bottom:40px;
-}
-
-.slider-btn{
-    position:absolute;
-    top:45%;
-    transform:translateY(-50%);
-    z-index:5;
-
-    width:42px;
-    height:80px;
-
-    border:none;
-    border-radius:8px;
-
-    background:rgba(0,0,0,.65);
-    color:white;
-
-    font-size:42px;
-    cursor:pointer;
-
-    opacity:0;
-    transition:.2s;
-}
-
-.slider-wrap:hover .slider-btn{
-    opacity:1;
-}
-
-.slider-btn.left{
-    left:0;
-}
-
-.slider-btn.right{
-    right:0;
-}
-
-.section-header{
-
-    display:flex;
-    align-items:center;
-    gap:18px;
-
-    margin-bottom:-10px;
-
-}
-
-.clear-btn{
-
-    background:none;
-    border:none;
-
-    color:#8db9ff;
-
-    font:inherit;
-    font-size:18px;
-    font-weight:bold;
-
-    cursor:pointer;
-
-    transition:.2s;
-
-    padding:0;
-}
-
-.clear-btn:hover{
-
-    color:white;
-    transform:scale(1.05);
-
-}
-
-.content-section .section-title{
-    margin-bottom:18px;
-}
-
-.featured-bar{
-    position:relative;
-    margin-bottom:50px;
-}
-
-.featured-container{
-    overflow:hidden;
-    border-radius:22px;
-}
-
-.featured-track{
-    display:flex;
-    transition:.35s ease;
-}
-
-.featured-card{
-    min-width:100%;
-    aspect-ratio:16/9;
-    height:auto;
-    position:relative;
-    color:white;
-    text-decoration:none;
-    background-size:cover;
-    background-position:center;
-}
-
-.featured-card::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:linear-gradient(to top, rgba(0,0,0,.9), rgba(0,0,0,.2));
-}
-
-.featured-info{
-    position:absolute;
-    left:40px;
-    bottom:40px;
-    z-index:2;
-}
-
-.featured-info h3{
-    font-size:38px;
-    margin-bottom:14px;
-}
-
-.featured-arrow{
-    position:absolute;
-    top:50%;
-    transform:translateY(-50%);
-    z-index:5;
-    width:45px;
-    height:70px;
-    border:none;
-    border-radius:10px;
-    background:rgba(0,0,0,.55);
-    color:white;
-    font-size:38px;
-    cursor:pointer;
-}
-
-.featured-arrow.left{ left:16px; }
-.featured-arrow.right{ right:16px; }
-
-.dots{
-    display:flex;
-    justify-content:center;
-    gap:10px;
-    margin-top:14px;
-}
-
-.dot{
-    width:10px;
-    height:10px;
-    border-radius:50%;
-    background:rgba(255,255,255,.35);
-    cursor:pointer;
-}
-
-.dot.active{
-    background:#8db9ff;
-    transform:scale(1.25);
-}
-
-/* Hero slider remains for now */
-.hero-slider {
-    position: relative;
-    margin-bottom: 45px;
-}
-
-.hero-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
-    background: rgba(0,0,0,0.6);
-    color: white;
-    border: none;
-    width: 50px;
-    height: 80px;
-    font-size: 40px;
-    cursor: pointer;
-    border-radius: 8px;
-    opacity: 0.8;
-}
-
-.hero-arrow.left { left: 20px; }
-.hero-arrow.right { right: 20px; }
-
-.progress-bar{
-    position:absolute;
-    left:0;
-    right:0;
-    bottom:0;
-
-    height:4px;
-
-    background:#444;
-}
-
-.progress-fill{
-    height:100%;
-    background:#4da3ff;
-}
-
-</style>
-</head>
-
-<link rel="icon" type="image/png" href="logo.png">
-
-<body>
-
-<div class="header">
-
-    <div style="display:flex;align-items:center;gap:40px;">
-
-        <a href="index.html" class="logo">
-            <span>C's Movies</span>
-        </a>
-
-        <nav class="nav">
-
-            <a class="active" href="#">🏠 Home</a>
-            <a href="movies.html">🎬 Movies</a>
-            <a href="shows.html">📺 Shows</a>
-        
-        </nav>
-
-        <div class="search-box">
-            <span>🔍</span>
-            <input
-                class="search"
-                type="text"
-                placeholder="Search genre, movies, etc...">
-        </div>
-
-    </div>
-
-</div>
-
-<div class="container">
-
-    <!-- Featured Bar -->
-    <div class="featured-bar">
-        <button class="featured-arrow left" onclick="changeFeatured(-1)">‹</button>
-
-        <div class="featured-container">
-            <div class="featured-track" id="featuredTrack"></div>
-        </div>
-
-        <button class="featured-arrow right" onclick="changeFeatured(1)">›</button>
-
-        <div class="dots" id="dotsContainer"></div>
-    </div>
-
-    <div class="section-header">
-
-        <h2 class="section-title">
-            Continue Watching
-        </h2>
-
-        <button class="clear-btn" onclick="clearContinueWatching()">
-            🗑️ Clear
-        </button>
-
-    </div>
-
-    <div class="slider-wrap">
-        <button class="slider-btn left" onclick="scrollContinue(-1)">‹</button>
-
-        <div class="continue-row" id="continueRow"></div>
-
-        <button class="slider-btn right" onclick="scrollContinue(1)">›</button>
-    </div>
-
-    <!-- Recently Added -->
-    <div class="section-header">
-        <h2 class="section-title">Recently Added</h2>
-    </div>
-
-    <div class="slider-wrap">
-        <button class="slider-btn left" onclick="scrollRecently(-1)">‹</button>
-        <div class="continue-row" id="recentlyRow"></div>
-        <button class="slider-btn right" onclick="scrollRecently(1)">›</button>
-    </div>
-
-    <div class="content-section">
-
-        <h2 class="section-title">All Content</h2>
-
-        <div class="grid" id="videoGrid"></div>
-    </div>
-
-<script>
-
-function formatTime(seconds){
-    seconds = Math.floor(seconds);
-
-    const hours = Math.floor(seconds / 3600);
-    const mins = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-
-    if (hours > 0) {
-        return `${hours}:${mins.toString().padStart(2,"0")}:${secs.toString().padStart(2,"0")}`;
+[
+    {
+        "id": "1",
+        "title": "Monsters, Inc.",
+        "description": "Two monsters whose job is to make human children scream accidentally let a little girl into their world and must now protect her from their own kind to return her home unscathed.",
+        "category": "Movies",
+        "genre": "Comedy",
+        "subgenre": "Adventure",
+        "tags": [
+            "monsters",
+            "disney",
+            "pixar",
+            "kids",
+            "animated",
+            "billy crystal",
+            "john goodman"
+        ],
+        "date": "2001",
+        "thumbnail": "https://media.cpodcasts.com/Thumbnails/Minc.jpg",
+        "video": "https://media.cpodcasts.com/Movies/Monsters,_Inc..mp4",
+        "captions": "https://media.cpodcasts.com/Captions/Minc.vtt",
+        "duration": 5536,
+        "featured": false
+    },
+    {
+        "id": "2",
+        "title": "The Wolf of Wall Street",
+        "description": "Based on the true story of Jordan Belfort, from his rise to a wealthy stock-broker living the high life to his fall involving crime, corruption and the federal government.",
+        "category": "Movies",
+        "genre": "Comedy",
+        "subgenre": "Thriller",
+        "tags": [
+            "wolf",
+            "wall street",
+            "dicaprio",
+            "leonardo",
+            "jonah",
+            "hill",
+            "adult",
+            "gambling"
+        ],
+        "date": "2013",
+        "thumbnail": "https://media.cpodcasts.com/Thumbnails/WOWS.jpg",
+        "video": "https://media.cpodcasts.com/Movies/The_Wolf_of_Wall_Street.mp4",
+        "captions": "https://media.cpodcasts.com/Captions/WOWS.vtt",
+        "duration": 10792,
+        "featured": true,
+        "featured_thumbnail": "https://media.cpodcasts.com/Thumbnails/WOWS.jpg"
+    },
+    {
+        "id": "3",
+        "title": "Interstellar",
+        "description": "In a dystopian future where Earth has become near-uninhabitable, a team of astronauts embark on a mission to find a new home for humanity.",
+        "category": "Movies",
+        "genre": "Sci-fi",
+        "subgenre": "Adventure",
+        "tags": [
+            "space",
+            "wormhole",
+            "black hole",
+            "time",
+            "planet",
+            "christopher nolan",
+            "matthew mcconaughey"
+        ],
+        "date": "2014",
+        "thumbnail": "https://media.cpodcasts.com/Thumbnails/interstellar.jpg",
+        "video": "https://media.cpodcasts.com/Movies/Interstellar.mp4",
+        "captions": "https://media.cpodcasts.com/Captions/Interstellar.vtt",
+        "duration": 10144
+    },
+    {
+        "id": "4",
+        "title": "Cars",
+        "description": "On the way to the biggest race of his life, a hotshot rookie race car gets stranded in a rundown town and learns that winning isn't everything in life.",
+        "category": "Movies",
+        "genre": "Family",
+        "subgenre": "Comedy",
+        "tags": [
+            "car",
+            "lightning",
+            "mcqueen",
+            "disney",
+            "pixar"
+        ],
+        "date": "2006",
+        "thumbnail": "https://media.cpodcasts.com/Thumbnails/cars.jpg",
+        "video": "https://media.cpodcasts.com/Movies/Cars.mp4",
+        "captions": "https://media.cpodcasts.com/Captions/cars.vtt",
+        "duration": 6996
+    },
+    {
+        "id": "5",
+        "title": "Cars 2",
+        "description": "Star race car Lightning McQueen and his pal Mater head overseas to compete in the World Grand Prix race. But the road to the championship becomes rocky as Mater gets caught up in an intriguing adventure of his own: international espionage.",
+        "category": "Movies",
+        "genre": "Family",
+        "subgenre": "Action",
+        "tags": [
+            "car",
+            "lightning",
+            "mcqueen",
+            "disney",
+            "pixar"
+        ],
+        "date": "2011",
+        "thumbnail": "https://media.cpodcasts.com/Thumbnails/cars2.jpg",
+        "video": "https://media.cpodcasts.com/Movies/Cars_2.mp4",
+        "captions": "https://media.cpodcasts.com/Captions/cars 2.vtt",
+        "duration": 6996
+    },
+    {
+        "id": "6",
+        "title": "Obsession",
+        "description": "After breaking the mysterious \"One Wish Willow\" to win his crush's heart, a hopeless romantic finds himself getting exactly what he asked for, but he soon discovers that some desires come at a dark, sinister price.",
+        "category": "Movies",
+        "genre": "Horror",
+        "subgenre": "Romance",
+        "tags": [
+            "obsessed",
+            "wish",
+            "mcqueen"
+        ],
+        "date": "2026",
+        "thumbnail": "https://media.cpodcasts.com/Thumbnails/obsession.jpg",
+        "video": "https://media.cpodcasts.com/Movies/Obsession.mp4",
+        "captions": "https://media.cpodcasts.com/Captions/obsession.vtt",
+        "duration": 6533
+    },
+    {
+        "id": "7",
+        "title": "Inception",
+        "description": "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO, but his tragic past may doom the project and his team to disaster.",
+        "category": "Movies",
+        "genre": "Sci-fi",
+        "subgenre": "Action",
+        "tags": [
+            "psychological",
+            "future",
+            "time",
+            "dream",
+            "leonardo",
+            "dicaprio",
+            "murphey",
+            "cillian",
+            "christopher nolan"
+        ],
+        "date": "2010",
+        "thumbnail": "https://media.cpodcasts.com/Thumbnails/inception.jpg",
+        "video": "https://media.cpodcasts.com/Movies/Inception.mp4",
+        "captions": "https://media.cpodcasts.com/Captions/inception.vtt",
+        "duration": 8888
     }
-    return `${mins}:${secs.toString().padStart(2,"0")}`;
-}
-
-function loadContinueWatching(videos){
-    const row = document.getElementById("continueRow");
-    row.innerHTML = "";
-
-    videos.forEach(video => {
-        const progress = Number(
-            localStorage.getItem(`progress-${video.id}`)
-        );
-
-        if(isNaN(progress) || progress <= 60 || progress >= video.duration - 600){
-            return;
-        }
-
-       row.appendChild(createCard(video, {
-            showProgress: true,
-            progress
-        }));
-    });
-}
-
-function clearContinueWatching(){
-    if(!confirm("Clear your Continue Watching list?")){
-        return;
-    }
-
-    const videos = JSON.parse(sessionStorage.getItem("videos")) || [];
-    videos.forEach(video => {
-        localStorage.removeItem(`progress-${video.id}`);
-    });
-
-    loadContinueWatching(videos);
-}
-
-let featuredIndex = 0;
-let featuredCount = 0;
-
-function loadFeatured(videos){
-    const featuredVideos = videos.filter(v => v.featured === true).slice(0, 4);
-    const track = document.getElementById("featuredTrack");
-    const dotsContainer = document.getElementById("dotsContainer");
-
-    track.innerHTML = "";
-    dotsContainer.innerHTML = "";
-
-    featuredCount = featuredVideos.length;
-    featuredIndex = 0;
-
-    featuredVideos.forEach((video, index) => {
-        const card = document.createElement("a");
-        card.className = "featured-card";
-        card.href = `watch.html?id=${video.id}`;
-
-        const thumbSrc = video.featured_thumbnail || video.thumbnail;
-        card.style.backgroundImage = `url("${thumbSrc}")`;
-
-        card.innerHTML = `
-            <div class="featured-info">
-                <h3>${video.title}</h3>
-                <span class="watch-btn">▶ Watch Now</span>
-            </div>
-        `;
-
-        track.appendChild(card);
-
-        const dot = document.createElement("div");
-        dot.className = "dot";
-        if(index === 0) dot.classList.add("active");
-        dot.onclick = () => goToFeatured(index);
-
-        dotsContainer.appendChild(dot);
-    });
-
-    updateFeatured();
-}
-
-function goToFeatured(index){
-    featuredIndex = index;
-    updateFeatured();
-}
-
-function changeFeatured(direction){
-    featuredIndex += direction;
-
-    if(featuredIndex < 0){
-        featuredIndex = featuredCount - 1;
-    }
-
-    if(featuredIndex >= featuredCount){
-        featuredIndex = 0;
-    }
-
-    updateFeatured();
-}
-
-function updateFeatured(){
-    const track = document.getElementById("featuredTrack");
-    const dots = document.querySelectorAll(".dot");
-
-    track.style.transform = `translateX(-${featuredIndex * 100}%)`;
-
-    dots.forEach((dot, index) => {
-        dot.classList.toggle("active", index === featuredIndex);
-    });
-}
-
-function loadRecentlyAdded(videos) {
-    const row = document.getElementById("recentlyRow");
-    row.innerHTML = "";
-
-    // For now, just show all or reverse for "recent" feel
-    const recentVideos = [...videos].reverse(); // simple mock
-
-    recentVideos.forEach(video => {
-        const card = document.createElement("a");
-        card.className = "card";
-        card.href = `watch.html?id=${video.id}`;
-
-        card.innerHTML = `
-            <div class="thumb">
-                <img src="${video.thumbnail}">
-                <div class="duration">${formatTime(video.duration)}</div>
-            </div>
-            <h3>${video.title}</h3>
-        `;
-
-        row.appendChild(card);
-    });
-}
-
-function scrollContinue(direction){
-    const row = document.getElementById("continueRow");
-    row.scrollBy({
-        left: direction * 700,
-        behavior: "smooth"
-    });
-}
-
-function scrollRecently(direction){
-    const row = document.getElementById("recentlyRow");
-    row.scrollBy({
-        left: direction * 700,
-        behavior: "smooth"
-    });
-}
-
-function createCard(video, options = {}) {
-
-    const {
-        showProgress = false,
-        progress = 0,
-        showGenre = false
-    } = options;
-
-    const card = document.createElement("a");
-
-    card.className = "card";
-    card.href = `video.html?id=${video.id}`;
-
-    let extra = "";
-
-    if (showProgress) {
-
-        const percent = (progress / video.duration) * 100;
-
-        extra = `
-            <div class="progress-bar">
-                <div class="progress-fill"
-                     style="width:${percent}%">
-                </div>
-            </div>
-        `;
-
-    } else {
-
-        extra = `
-            <div class="duration">
-                ${formatTime(video.duration)}
-            </div>
-        `;
-    }
-
-    card.innerHTML = `
-
-        <div class="thumb">
-
-            <img src="${video.thumbnail}"
-                 alt="${video.title}">
-
-            ${extra}
-
-        </div>
-
-        <h3>${video.title}</h3>
-
-        ${
-            showGenre
-            ? `<p>${video.genre} • ${video.subgenre}</p>`
-            : ""
-        }
-
-    `;
-
-    return card;
-}
-
-const JSON_URL = "videos.json";
-
-async function loadVideos() {
-    const grid = document.getElementById("videoGrid");
-
-    try {
-        let videos;
-
-        const cached = sessionStorage.getItem("videos");
-        if (cached) {
-            videos = JSON.parse(cached);
-            console.log("Loaded videos from cache.");
-        } else {
-            const response = await fetch(JSON_URL);
-            videos = await response.json();
-            sessionStorage.setItem("videos", JSON.stringify(videos));
-            console.log("Downloaded videos from API.");
-        }
-
-        loadFeatured(videos);
-        loadContinueWatching(videos);
-        loadRecentlyAdded(videos);
-
-        grid.innerHTML = "";
-        videos.forEach(video => {
-            const card = document.createElement("a");
-            card.className = "card";
-            card.href = `watch.html?id=${video.id}`;
-
-            card.innerHTML = `
-                <div class="thumb">
-                    ${video.thumbnail ? `<img src="${video.thumbnail}" alt="${video.title}">` : ""}
-                    <div class="duration">${formatTime(video.duration)}</div>
-                </div>
-                <h3>${video.title}</h3>
-            `;
-            grid.appendChild(card);
-        });
-    } catch (err) {
-        console.error(err);
-        grid.innerHTML = "<p>Failed to load videos.</p>";
-    }
-}
-
-loadVideos();
-
-</script>
-
-</div>
-
-</body>
-</html>
+]
