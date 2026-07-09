@@ -1,7 +1,13 @@
-import { Home } from "./pages/home.js";
+import { Header } from "../components/header.js";
 
-export function router() {
+export function Home() {
 
-    document.getElementById("app").innerHTML = Home();
+    return `
+        ${Header("home")}
+
+        <main class="container">
+            ...
+        </main>
+    `;
 
 }
