@@ -1,17 +1,23 @@
 export function Card(video) {
 
     return `
-        <div class="card">
+        <a class="card" href="/video/${video.id}" data-link>
 
             <div class="thumb">
-                <img src="${video.thumbnail}">
+
+                <img src="${video.thumbnail}" alt="${video.title}">
+
+                <span class="duration">
+                    ${formatTime(video.duration)}
+                </span>
+
             </div>
 
             <h3>${video.title}</h3>
 
             <p>${video.genre}</p>
 
-        </div>
+        </a>
     `;
 
 }
