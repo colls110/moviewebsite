@@ -1,8 +1,10 @@
 import { Header } from "../components/header.js";
 import { Card } from "../components/card.js";
-import { videos } from "../data/videos.js";
+import { getVideos } from "../data.js";
 
 export function Home() {
+
+    const videos = getVideos();
 
     return `
 
@@ -15,7 +17,6 @@ export function Home() {
             <div class="grid">
 
                 ${videos.map(Card).join("")}
-
             </div>
 
         </main>
