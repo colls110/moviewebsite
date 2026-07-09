@@ -414,77 +414,121 @@ body{
     margin-bottom:18px;
 }
 
-/* Featured Bar Styles */
-.featured-bar {
+.featured-bar{
+    position:relative;
+    margin-bottom:50px;
+}
+
+.featured-container{
+    overflow:hidden;
+    border-radius:22px;
+}
+
+.featured-track{
+    display:flex;
+    transition:.35s ease;
+}
+
+.featured-card{
+    min-width:100%;
+    height:420px;
+    position:relative;
+    color:white;
+    text-decoration:none;
+    background-size:cover;
+    background-position:center;
+}
+
+.featured-card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(to top, rgba(0,0,0,.9), rgba(0,0,0,.2));
+}
+
+.featured-info{
+    position:absolute;
+    left:40px;
+    bottom:40px;
+    z-index:2;
+}
+
+.featured-info h3{
+    font-size:38px;
+    margin-bottom:14px;
+}
+
+.featured-arrow{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    z-index:5;
+    width:45px;
+    height:70px;
+    border:none;
+    border-radius:10px;
+    background:rgba(0,0,0,.55);
+    color:white;
+    font-size:38px;
+    cursor:pointer;
+}
+
+.featured-arrow.left{ left:16px; }
+.featured-arrow.right{ right:16px; }
+
+.dots{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin-top:14px;
+}
+
+.dot{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:rgba(255,255,255,.35);
+    cursor:pointer;
+}
+
+.dot.active{
+    background:#8db9ff;
+    transform:scale(1.25);
+}
+
+/* Hero slider remains for now */
+.hero-slider {
     position: relative;
-    margin-bottom: 50px;
+    margin-bottom: 45px;
 }
 
-.featured-container {
-    display: flex;
-    gap: 20px;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-    padding: 10px 0;
-}
-
-.featured-container::-webkit-scrollbar {
-    display: none;
-}
-
-.featured-card {
-    flex: 0 0 380px;
+.hero-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    background: rgba(0,0,0,0.6);
+    color: white;
+    border: none;
+    width: 50px;
+    height: 80px;
+    font-size: 40px;
     cursor: pointer;
-    transition: .3s;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    border-radius: 8px;
+    opacity: 0.8;
 }
 
-.featured-card:hover {
-    transform: scale(1.03);
-}
-
-.featured-card img {
-    width: 100%;
-    height: 220px;
-    object-fit: cover;
-}
-
-.featured-card h3 {
-    padding: 14px 16px 10px;
-    font-size: 19px;
-    background: rgba(17, 24, 39, 0.95);
-}
-
-.dots {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 16px;
-}
-
-.dot {
-    width: 12px;
-    height: 12px;
-    background: rgba(255,255,255,0.4);
-    border-radius: 50%;
-    cursor: pointer;
-    transition: .2s;
-}
-
-.dot.active {
-    background: #8db9ff;
-    transform: scale(1.2);
-}
+.hero-arrow.left { left: 20px; }
+.hero-arrow.right { right: 20px; }
 
 .progress-bar{
     position:absolute;
     left:0;
     right:0;
     bottom:0;
+
     height:4px;
+
     background:#444;
 }
 
@@ -531,12 +575,15 @@ body{
 <div class="container">
 
     <!-- Featured Bar -->
-    <div class="section-header">
-        <h2 class="section-title">Featured</h2>
-    </div>
-    
     <div class="featured-bar">
-        <div class="featured-container" id="featuredContainer"></div>
+        <button class="featured-arrow left" onclick="changeFeatured(-1)">‹</button>
+
+        <div class="featured-container">
+            <div class="featured-track" id="featuredTrack"></div>
+        </div>
+
+        <button class="featured-arrow right" onclick="changeFeatured(1)">›</button>
+
         <div class="dots" id="dotsContainer"></div>
     </div>
 
@@ -626,13 +673,19 @@ function clearContinueWatching(){
     loadContinueWatching(videos);
 }
 
-function loadFeatured(videos) {
-    const featuredVideos = videos.filter(v => v.featured === true);
-    const container = document.getElementById("featuredContainer");
+let featuredIndex = 0;
+let featuredCount = 0;
+
+function loadFeatured(videos){
+    const featuredVideos = videos.filter(v => v.featured === true).slice(0, 4);
+    const track = document.getElementById("featuredTrack");
     const dotsContainer = document.getElementById("dotsContainer");
-    
-    container.innerHTML = "";
+
+    track.innerHTML = "";
     dotsContainer.innerHTML = "";
+
+    featuredCount = featuredVideos.length;
+    featuredIndex = 0;
 
     featuredVideos.forEach((video, index) => {
         const card = document.createElement("a");
@@ -640,38 +693,55 @@ function loadFeatured(videos) {
         card.href = `watch.html?id=${video.id}`;
 
         const thumbSrc = video.featured_thumbnail || video.thumbnail;
+        card.style.backgroundImage = `url("${thumbSrc}")`;
 
         card.innerHTML = `
-            <img src="${thumbSrc}" alt="${video.title}">
-            <h3>${video.title}</h3>
+            <div class="featured-info">
+                <h3>${video.title}</h3>
+                <span class="watch-btn">▶ Watch Now</span>
+            </div>
         `;
-        container.appendChild(card);
 
-        // Dot
+        track.appendChild(card);
+
         const dot = document.createElement("div");
         dot.className = "dot";
-        if (index === 0) dot.classList.add("active");
-        dot.onclick = () => {
-            scrollToFeatured(index);
-        };
+        if(index === 0) dot.classList.add("active");
+        dot.onclick = () => goToFeatured(index);
+
         dotsContainer.appendChild(dot);
     });
+
+    updateFeatured();
 }
 
-function scrollToFeatured(index) {
-    const container = document.getElementById("featuredContainer");
-    const cards = container.querySelectorAll(".featured-card");
-    if (cards[index]) {
-        cards[index].scrollIntoView({
-            behavior: "smooth",
-            inline: "center"
-        });
+function goToFeatured(index){
+    featuredIndex = index;
+    updateFeatured();
+}
+
+function changeFeatured(direction){
+    featuredIndex += direction;
+
+    if(featuredIndex < 0){
+        featuredIndex = featuredCount - 1;
     }
-    
-    // Update active dot
+
+    if(featuredIndex >= featuredCount){
+        featuredIndex = 0;
+    }
+
+    updateFeatured();
+}
+
+function updateFeatured(){
+    const track = document.getElementById("featuredTrack");
     const dots = document.querySelectorAll(".dot");
-    dots.forEach((dot, i) => {
-        dot.classList.toggle("active", i === index);
+
+    track.style.transform = `translateX(-${featuredIndex * 100}%)`;
+
+    dots.forEach((dot, index) => {
+        dot.classList.toggle("active", index === featuredIndex);
     });
 }
 
@@ -679,10 +749,23 @@ function loadRecentlyAdded(videos) {
     const row = document.getElementById("recentlyRow");
     row.innerHTML = "";
 
+    // For now, just show all or reverse for "recent" feel
     const recentVideos = [...videos].reverse(); // simple mock
 
     recentVideos.forEach(video => {
-        row.appendChild(createCard(video));
+        const card = document.createElement("a");
+        card.className = "card";
+        card.href = `watch.html?id=${video.id}`;
+
+        card.innerHTML = `
+            <div class="thumb">
+                <img src="${video.thumbnail}">
+                <div class="duration">${formatTime(video.duration)}</div>
+            </div>
+            <h3>${video.title}</h3>
+        `;
+
+        row.appendChild(card);
     });
 }
 
@@ -713,12 +796,14 @@ function createCard(video, options = {}) {
     const card = document.createElement("a");
 
     card.className = "card";
-    card.href = `watch.html?id=${video.id}`;
+    card.href = `video.html?id=${video.id}`;
 
     let extra = "";
 
     if (showProgress) {
+
         const percent = (progress / video.duration) * 100;
+
         extra = `
             <div class="progress-bar">
                 <div class="progress-fill"
@@ -726,7 +811,9 @@ function createCard(video, options = {}) {
                 </div>
             </div>
         `;
+
     } else {
+
         extra = `
             <div class="duration">
                 ${formatTime(video.duration)}
@@ -735,12 +822,24 @@ function createCard(video, options = {}) {
     }
 
     card.innerHTML = `
+
         <div class="thumb">
-            <img src="${video.thumbnail}" alt="${video.title}">
+
+            <img src="${video.thumbnail}"
+                 alt="${video.title}">
+
             ${extra}
+
         </div>
+
         <h3>${video.title}</h3>
-        ${showGenre ? `<p>${video.genre} • ${video.subgenre}</p>` : ""}
+
+        ${
+            showGenre
+            ? `<p>${video.genre} • ${video.subgenre}</p>`
+            : ""
+        }
+
     `;
 
     return card;
@@ -771,7 +870,18 @@ async function loadVideos() {
 
         grid.innerHTML = "";
         videos.forEach(video => {
-            grid.appendChild(createCard(video));
+            const card = document.createElement("a");
+            card.className = "card";
+            card.href = `watch.html?id=${video.id}`;
+
+            card.innerHTML = `
+                <div class="thumb">
+                    ${video.thumbnail ? `<img src="${video.thumbnail}" alt="${video.title}">` : ""}
+                    <div class="duration">${formatTime(video.duration)}</div>
+                </div>
+                <h3>${video.title}</h3>
+            `;
+            grid.appendChild(card);
         });
     } catch (err) {
         console.error(err);
