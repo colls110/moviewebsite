@@ -796,6 +796,8 @@ video.onloadedmetadata = () => {
     if (track) {
         track.mode = "hidden";
     }
+
+    captions.classList.toggle("active", captionsEnabled);
 };
 
 video.addEventListener("pause",()=>{
@@ -928,6 +930,8 @@ function initPlayer() {
     video.addEventListener("canplay", () => {
         video.play().catch(() => {});
     }, { once: true });
+
+    let captionsEnabled = localStorage.getItem("captions") === "true";
 
     initAudio();
     loadVolume();
