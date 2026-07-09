@@ -630,29 +630,18 @@ function loadContinueWatching(videos){
     row.innerHTML = "";
 
     videos.forEach(video => {
-        const progress = Number(localStorage.getItem(`progress-${video.id}`));
+        const progress = Number(
+            localStorage.getItem(`progress-${video.id}`)
+        );
 
         if(isNaN(progress) || progress <= 60 || progress >= video.duration - 600){
             return;
         }
 
-        const card = document.createElement("a");
-        card.className = "card";
-        card.href = `watch.html?id=${video.id}`;
-
-        const percent = (progress / video.duration) * 100;
-
-        card.innerHTML = `
-            <div class="thumb">
-                <img src="${video.thumbnail}">
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width:${percent}%"></div>
-                </div>
-            </div>
-            <h3>${video.title}</h3>
-        `;
-
-        row.appendChild(card);
+       row.appendChild(createCard(video, {
+            showProgress: true,
+            progress
+        }));
     });
 }
 
@@ -756,6 +745,66 @@ function scrollRecently(direction){
         left: direction * 700,
         behavior: "smooth"
     });
+}
+
+function createCard(video, options = {}) {
+
+    const {
+        showProgress = false,
+        progress = 0,
+        showGenre = false
+    } = options;
+
+    const card = document.createElement("a");
+
+    card.className = "card";
+    card.href = `video.html?id=${video.id}`;
+
+    let extra = "";
+
+    if (showProgress) {
+
+        const percent = (progress / video.duration) * 100;
+
+        extra = `
+            <div class="progress-bar">
+                <div class="progress-fill"
+                     style="width:${percent}%">
+                </div>
+            </div>
+        `;
+
+    } else {
+
+        extra = `
+            <div class="duration">
+                ${formatTime(video.duration)}
+            </div>
+        `;
+    }
+
+    card.innerHTML = `
+
+        <div class="thumb">
+
+            <img src="${video.thumbnail}"
+                 alt="${video.title}">
+
+            ${extra}
+
+        </div>
+
+        <h3>${video.title}</h3>
+
+        ${
+            showGenre
+            ? `<p>${video.genre} • ${video.subgenre}</p>`
+            : ""
+        }
+
+    `;
+
+    return card;
 }
 
 const JSON_URL = "videos.json";
