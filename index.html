@@ -711,24 +711,7 @@ function loadRecentlyAdded(videos) {
     const row = document.getElementById("recentlyRow");
     row.innerHTML = "";
 
-    // For now, just show all or reverse for "recent" feel
-    const recentVideos = [...videos].reverse(); // simple mock
-
-    recentVideos.forEach(video => {
-        const card = document.createElement("a");
-        card.className = "card";
-        card.href = `watch.html?id=${video.id}`;
-
-        card.innerHTML = `
-            <div class="thumb">
-                <img src="${video.thumbnail}">
-                <div class="duration">${formatTime(video.duration)}</div>
-            </div>
-            <h3>${video.title}</h3>
-        `;
-
-        row.appendChild(card);
-    });
+    row.appendChild(createCard(video));
 }
 
 function scrollContinue(direction){
