@@ -19,7 +19,7 @@ export function Home() {
                 ${videos.map(Card).join("")}
             </div>
 
-        </main
+        </main>
 
     `;
 
